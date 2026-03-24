@@ -13,6 +13,7 @@
 [![API Base URL](https://img.shields.io/badge/API-api.noverfly.com%2Fv1-orange)](https://api.noverfly.com/v1)
 [![GFK Storage](https://img.shields.io/badge/Storage-gfk.noverfly.com-blueviolet)](https://gfk.noverfly.com)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539?logo=openapi-initiative)](openapi.yaml)
+[![Postman](https://img.shields.io/badge/Postman-API%20Docs-FF6C37?logo=postman)](https://documenter.getpostman.com/view/53467544/2sBXijLYKF)
 [![Help Center](https://img.shields.io/badge/Help-help.noverfly.com-lightblue)](https://help.noverfly.com)
 
 ---
