@@ -7,7 +7,7 @@ NoverFly takes security seriously. This page outlines how we protect your data, 
 ## Infrastructure Security
 
 ### Hosting
-- **OVH Cloud VPS** — EU-based hosting (France) with enterprise-grade infrastructure
+- **Cloud VPS** — EU-based hosting (France) with enterprise-grade infrastructure
 - **Docker containers** — All services run in isolated containers
 - **Private networking** — Internal services communicate on an isolated Docker network
 - **Firewall** — Only ports 80 and 443 are exposed to the internet
@@ -30,7 +30,7 @@ NoverFly takes security seriously. This page outlines how we protect your data, 
 - **Full (Strict) SSL** — No mixed content or downgrade attacks
 
 ### At Rest
-- **PostgreSQL** — Database encrypted at disk level via OVH infrastructure
+- **PostgreSQL** — Database encrypted at disk level
 - **Flivex Storage** — Server-side encryption (SSE) for all uploaded files
 - **Redis** — In-memory data protected by private network isolation
 - **Backups** — Encrypted daily backups retained for 30 days
