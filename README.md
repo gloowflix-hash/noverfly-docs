@@ -3,11 +3,33 @@
 > **Official developer documentation for the [NoverFly](https://noverfly.com) platform API.**
 > Build websites, web applications, sell products, manage content, use a cloud database (BaaS), and integrate AI — all through one REST API.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![API](https://img.shields.io/badge/API-v1-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-active-success)
+![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen?logo=node.js)
+![PostgreSQL](https://img.shields.io/badge/database-PostgreSQL%2016-336791?logo=postgresql)
+![Redis](https://img.shields.io/badge/cache-Redis%207-DC382D?logo=redis)
 [![Website](https://img.shields.io/badge/Website-noverfly.com-brightgreen)](https://noverfly.com)
 [![API Base URL](https://img.shields.io/badge/API-api.noverfly.com%2Fv1-orange)](https://api.noverfly.com/v1)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539?logo=openapi-initiative)](openapi.yaml)
 [![Help Center](https://img.shields.io/badge/Help-help.noverfly.com-lightblue)](https://help.noverfly.com)
+
+---
+
+## Why NoverFly?
+
+| Traditional Stack | NoverFly |
+|---|---|
+| Webflow + Shopify + Firebase + Vercel + Stripe + Contentful | **One platform, one API, one dashboard** |
+| 6+ subscriptions, 6+ dashboards | **$0 to start — scale as you grow** |
+| Weeks of integration work | **Ship in hours** |
+| Limited to US/EU markets | **Built for Africa & global scale** |
+
+- **All-in-one** — Website builder + App builder + CMS + E-commerce + BaaS + AI
+- **No-code + API** — Visual drag-and-drop editor for designers, full REST API for developers
+- **Built for Africa & global scale** — Lightweight, fast, works on low bandwidth
+- **Faster than traditional stack** — Go from idea to production in hours, not weeks
+- **Developer-first** — OpenAPI spec, JWT auth, webhooks, SDK (coming soon)
 
 ---
 
@@ -224,13 +246,75 @@ docker run -p 8080:8080 -e SWAGGER_JSON=/spec/openapi.yaml -v $(pwd):/spec swagg
 
 ---
 
-## SDKs (Coming Soon)
+## SDK (Coming Soon)
+
+### JavaScript / TypeScript
+
+```js
+import { NoverFly } from "@noverfly/sdk"
+
+const api = new NoverFly("YOUR_API_KEY")
+
+// List all sites
+const sites = await api.sites.list()
+console.log(sites)
+
+// Create a new application
+const app = await api.apps.create({
+  name: "My SaaS Dashboard",
+  template: "dashboard"
+})
+
+// Query database
+const users = await api.database.query("SELECT * FROM users WHERE active = true")
+
+// Create a product
+const product = await api.ecommerce.products.create({
+  name: "T-Shirt",
+  price: 2500,
+  currency: "XOF"
+})
+```
+
+### Python
+
+```python
+from noverfly import NoverFly
+
+api = NoverFly("YOUR_API_KEY")
+
+# List sites
+sites = api.sites.list()
+
+# Create an app
+app = api.apps.create(name="My CRM", template="crm")
+
+# Query database
+results = api.database.query("SELECT * FROM orders")
+```
+
+### Installation
 
 | Language | Package | Status |
 |----------|---------|--------|
 | JavaScript / TypeScript | `npm install @noverfly/sdk` | 🔜 Coming soon |
 | Python | `pip install noverfly` | 🔜 Coming soon |
 | PHP | `composer require noverfly/sdk` | 🔜 Coming soon |
+
+---
+
+## Use Cases
+
+| Use Case | How NoverFly Helps |
+|----------|--------------------|
+| **Build a SaaS** | Visual app builder + BaaS database + auth + payments + deploy |
+| **Build an E-Commerce Store** | Product catalog + cart + checkout + Stripe/PayPal + order management |
+| **Build a CMS-Powered Website** | Drag-and-drop editor + dynamic collections + custom fields + API |
+| **Build a Marketplace** | Multi-vendor products + user auth + payments + dashboards |
+| **Build an Internal Tool** | Admin panels + database queries + role-based access + deploy |
+| **Build a Client Portal** | Authenticated dashboards + real-time data + custom branding |
+| **Build a Landing Page** | GlowDesign editor + responsive design + custom domain + analytics |
+| **Build a Blog / Media Site** | CMS collections + markdown + SEO-friendly URLs + AI writer |
 
 ---
 
