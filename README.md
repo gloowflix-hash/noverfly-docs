@@ -1,7 +1,7 @@
 # NoverFly API Documentation
 
 > **Official developer documentation for the [NoverFly](https://noverfly.com) platform API.**
-> Build websites, sell products, manage content, and integrate AI — all through one REST API.
+> Build websites, sell products, manage content, use a cloud database (BaaS), and integrate AI — all through one REST API.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Website](https://img.shields.io/badge/Website-noverfly.com-brightgreen)](https://noverfly.com)
@@ -13,10 +13,11 @@
 
 ## What is NoverFly?
 
-**NoverFly** is an all-in-one **SaaS website builder** and **e-commerce platform** — like Webflow + Shopify + Firebase combined. NoverFly provides a REST API for developers to programmatically manage every aspect of the platform:
+**NoverFly** is an all-in-one **SaaS website builder**, **e-commerce platform**, and **Backend as a Service (BaaS)** — like Webflow + Shopify + Firebase combined. NoverFly provides a REST API for developers to programmatically manage every aspect of the platform:
 
 - **Website Builder API** — Create and manage sites, pages, and designs
 - **CMS API** — Collections, entries, dynamic content
+- **Database API (BaaS)** — Cloud PostgreSQL, tables, queries, real-time data, row-level security
 - **E-Commerce API** — Products, cart, checkout, orders, payments (Stripe & PayPal)
 - **Authentication API** — JWT, OAuth 2.0 (Google), API keys, multi-tenant
 - **AI API** — Content generation, design assistance, image generation
@@ -36,7 +37,7 @@ NoverFly is built for:
 
 ### Keywords
 
-`NoverFly` · `NoverFly API` · `website builder API` · `SaaS platform` · `e-commerce API` · `GlowDesign` · `CMS API` · `Gloowflix Cloud` · `drag-and-drop website builder` · `headless CMS` · `REST API` · `multi-tenant SaaS`
+`NoverFly` · `NoverFly API` · `website builder API` · `SaaS platform` · `e-commerce API` · `BaaS` · `Backend as a Service` · `cloud database` · `GlowDesign` · `CMS API` · `Gloowflix Cloud` · `drag-and-drop website builder` · `headless CMS` · `REST API` · `multi-tenant SaaS` · `PostgreSQL` · `database API`
 
 ---
 
@@ -103,6 +104,7 @@ curl https://api.noverfly.com/v1/ecommerce/products \
 | [Authentication](docs/authentication.md) | JWT tokens, Google OAuth, API keys, roles, multi-tenant auth |
 | [GlowDesign Editor](docs/glowdesign.md) | Visual drag-and-drop editor, components, responsive design |
 | [CMS & Database](docs/cms.md) | Collections, custom fields, entries, CMS API, webhooks |
+| [Database & BaaS](docs/database.md) | Cloud PostgreSQL, tables, queries, real-time subscriptions, row-level security |
 | [E-Commerce](docs/ecommerce.md) | Products, variants, cart, checkout, orders, Stripe/PayPal |
 | [**API Reference**](docs/api.md) | **All REST API endpoints, rate limits, errors, pagination** |
 | [Deployment](docs/deployment.md) | Publishing, custom domains, SSL, CI/CD, rollbacks |
@@ -121,6 +123,7 @@ Base URL: `https://api.noverfly.com/v1`
 | **Organizations** | `GET /organizations` · `POST /organizations` · `POST /organizations/:id/members` | Multi-tenant team management |
 | **Sites** | `GET /sites` · `POST /sites` · `POST /sites/:id/publish` | Website creation and publishing |
 | **CMS** | `GET /cms/:collection/entries` · `POST /cms/:collection/entries` | Dynamic content management |
+| **Database (BaaS)** | `GET /database/tables` · `POST /database/query` · `POST /database/tables/:table/rows` | Cloud database, queries, real-time |
 | **E-Commerce** | `GET /ecommerce/products` · `POST /ecommerce/checkout` · `GET /ecommerce/orders` | Products, checkout, orders |
 | **Assets** | `POST /assets/upload` · `GET /assets` | File uploads and media |
 | **Analytics** | `GET /analytics/overview` · `GET /analytics/pageviews` | Traffic and performance |
@@ -145,9 +148,9 @@ NoverFly uses **JWT authentication** and supports:
 
 | Plan | Price | Quota | Features |
 |------|-------|-------|----------|
-| **Free** | $0/mo | 1 site, 100 pages, 500 MB storage | GlowDesign Lite, basic CMS |
-| **Pro** | $19/mo | 5 sites, unlimited pages, 10 GB storage | Custom domains, e-commerce, AI tools |
-| **Business** | $49/mo | 20 sites, unlimited pages, 50 GB storage | Priority support, analytics, team collaboration |
+| **Free** | $0/mo | 1 site, 100 pages, 500 MB storage | GlowDesign Lite, basic CMS, 1 database (1,000 rows) |
+| **Pro** | $19/mo | 5 sites, unlimited pages, 10 GB storage | Custom domains, e-commerce, AI tools, 5 databases (100K rows) |
+| **Business** | $49/mo | 20 sites, unlimited pages, 50 GB storage | Priority support, analytics, team collab, unlimited databases |
 | **Enterprise** | Custom | Unlimited | Dedicated infrastructure, SLA, custom integrations |
 
 > Visit [noverfly.com/pricing](https://noverfly.com/pricing) for detailed plan comparison.
@@ -183,10 +186,10 @@ X-RateLimit-Reset: 1705312800
 │  (Next.js)    │      (Node.js / Fastify)            │
 │               │                                     │
 │  • Marketing  │  • REST API (api.noverfly.com)      │
-│  • Dashboard  │  • PostgreSQL + Redis               │
-│  • GlowDesign │  • S3 Storage (OVH)                 │
-│  • Help Center│  • BullMQ Workers                   │
-│  • Dev Portal │  • WebSocket (real-time)             │
+│  • Dashboard  │  • PostgreSQL 16 (BaaS database)    │
+│  • GlowDesign │  • Redis 7 (cache + real-time)      │
+│  • Help Center│  • S3 Storage (OVH)                 │
+│  • Dev Portal │  • BullMQ Workers + WebSocket        │
 └───────────────┴─────────────────────────────────────┘
 ```
 

@@ -3,7 +3,7 @@ info:
   title: NoverFly API
   description: |
     Official REST API for the **NoverFly** platform — an all-in-one SaaS website builder,
-    CMS, e-commerce, and AI-powered design platform by Gloowflix Cloud.
+    CMS, e-commerce, Backend as a Service (BaaS), and AI-powered design platform by Gloowflix Cloud.
 
     ## Base URL
     ```
@@ -47,6 +47,8 @@ tags:
     description: Website creation, management, and publishing
   - name: CMS
     description: Content Management System — collections and entries
+  - name: Database
+    description: "Backend as a Service (BaaS) — cloud PostgreSQL database, tables, queries, real-time subscriptions"
   - name: E-Commerce
     description: Products, cart, checkout, orders, payments
   - name: Assets
@@ -891,6 +893,254 @@ paths:
       responses:
         "200":
           description: Entry deleted
+
+  # ─── DATABASE (BaaS) ────────────────────────────────
+  /database/tables:
+    get:
+      tags: [Database]
+      summary: List all database tables
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      responses:
+        "200":
+          description: List of tables
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: users
+                        columns:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              type:
+                                type: string
+                              nullable:
+                                type: boolean
+                              primaryKey:
+                                type: boolean
+                        rowCount:
+                          type: integer
+    post:
+      tags: [Database]
+      summary: Create a new table
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, columns]
+              properties:
+                name:
+                  type: string
+                  example: products
+                columns:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, type]
+                    properties:
+                      name:
+                        type: string
+                        example: title
+                      type:
+                        type: string
+                        enum: [text, integer, float, boolean, date, timestamp, json, uuid, serial]
+                      nullable:
+                        type: boolean
+                        default: true
+                      unique:
+                        type: boolean
+                        default: false
+                      default:
+                        type: string
+                enableRLS:
+                  type: boolean
+                  description: Enable Row-Level Security
+                  default: false
+      responses:
+        "201":
+          description: Table created
+
+  /database/tables/{tableName}:
+    parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [Database]
+      summary: Get table schema
+      responses:
+        "200":
+          description: Table schema with columns and constraints
+    delete:
+      tags: [Database]
+      summary: Drop a table
+      responses:
+        "200":
+          description: Table deleted
+
+  /database/tables/{tableName}/rows:
+    parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    get:
+      tags: [Database]
+      summary: Query rows from a table
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Sort"
+        - name: select
+          in: query
+          schema:
+            type: string
+          description: "Comma-separated columns to return (e.g. id,name,email)"
+        - name: filter
+          in: query
+          schema:
+            type: string
+          description: "Filter expression (e.g. status=eq.active, price=gt.10)"
+      responses:
+        "200":
+          description: Query results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+    post:
+      tags: [Database]
+      summary: Insert rows into a table
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rows]
+              properties:
+                rows:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+                  example:
+                    - name: "John Doe"
+                      email: "john@example.com"
+                      age: 30
+      responses:
+        "201":
+          description: Rows inserted
+
+  /database/tables/{tableName}/rows/{rowId}:
+    parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: rowId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: "#/components/parameters/TenantId"
+    patch:
+      tags: [Database]
+      summary: Update a row
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              example:
+                name: "Jane Doe"
+                age: 31
+      responses:
+        "200":
+          description: Row updated
+    delete:
+      tags: [Database]
+      summary: Delete a row
+      responses:
+        "200":
+          description: Row deleted
+
+  /database/query:
+    post:
+      tags: [Database]
+      summary: Execute a raw SQL query (read-only)
+      description: |
+        Execute a read-only SQL query against your tenant database.
+        Only SELECT statements are allowed. Mutations must use the rows endpoints.
+      parameters:
+        - $ref: "#/components/parameters/TenantId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query:
+                  type: string
+                  example: "SELECT * FROM products WHERE price > $1 ORDER BY created_at DESC LIMIT 10"
+                params:
+                  type: array
+                  items: {}
+                  example: [19.99]
+      responses:
+        "200":
+          description: Query results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  rowCount:
+                    type: integer
 
   # ─── E-COMMERCE ─────────────────────────────────────
   /ecommerce/products:

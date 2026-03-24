@@ -1,6 +1,6 @@
 # Introduction to NoverFly
 
-NoverFly is a **cloud-native SaaS platform** that brings together website building, content management, e-commerce, and AI-powered tools into one seamless experience.
+NoverFly is a **cloud-native SaaS platform** that brings together website building, content management, e-commerce, a cloud database (BaaS), and AI-powered tools into one seamless experience.
 
 ---
 
@@ -10,6 +10,7 @@ Building an online presence typically requires juggling multiple tools:
 - A website builder (Webflow, Wix)
 - An e-commerce platform (Shopify, WooCommerce)
 - A CMS (Contentful, Strapi)
+- A backend database / BaaS (Firebase, Supabase)
 - A hosting provider (Vercel, Netlify)
 - Analytics tools (Google Analytics, Mixpanel)
 
@@ -25,7 +26,10 @@ A powerful drag-and-drop editor that lets you design pixel-perfect websites with
 ### 🧩 CMS & Dynamic Content
 Structure your content with collections, custom fields, and relationships. Manage blog posts, products, team members, FAQs — anything you need.
 
-### 🛒 E-Commerce
+### �️ Database & BaaS (Backend as a Service)
+A fully managed **cloud PostgreSQL database** with REST API, SQL queries, Row-Level Security, and real-time WebSocket subscriptions. Create tables, insert data, query with filters — no backend code required. Like Firebase or Supabase, built into NoverFly.
+
+### �🛒 E-Commerce
 Full-featured online store with product catalog, inventory management, cart, checkout, Stripe & PayPal integration, order management, and customer accounts.
 
 ### 🤖 AI-Powered Tools
@@ -79,4 +83,5 @@ NoverFly uses a **shared-database, tenant-isolated** architecture:
 
 - [Getting Started](getting-started.md) — Create your first project
 - [Authentication](authentication.md) — Understand the auth system
+- [Database & BaaS](database.md) — Cloud database and REST API
 - [API Reference](api.md) — Explore the REST API

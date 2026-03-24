@@ -144,6 +144,20 @@ All responses follow a consistent structure:
 | `PATCH` | `/cms/:collectionSlug/entries/:id` | Update entry |
 | `DELETE` | `/cms/:collectionSlug/entries/:id` | Delete entry |
 
+### Database (BaaS)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/database/tables` | List all tables |
+| `POST` | `/database/tables` | Create a table |
+| `GET` | `/database/tables/:name` | Get table schema |
+| `DELETE` | `/database/tables/:name` | Drop a table |
+| `GET` | `/database/tables/:name/rows` | Query rows (with filters, sort, pagination) |
+| `POST` | `/database/tables/:name/rows` | Insert rows |
+| `PATCH` | `/database/tables/:name/rows/:id` | Update a row |
+| `DELETE` | `/database/tables/:name/rows/:id` | Delete a row |
+| `POST` | `/database/query` | Execute a read-only SQL query |
+
 ### E-Commerce
 
 | Method | Endpoint | Description |
