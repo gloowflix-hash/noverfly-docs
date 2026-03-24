@@ -33,7 +33,7 @@ Every NoverFly application is a complete stack:
 ├──────────────┼──────────────┼────────────────────────┤
 │     Auth     │   Storage    │     Deployment         │
 │              │              │                        │
-│  JWT + OAuth │  S3 Files    │  One-click publish     │
+│  JWT + OAuth │  Flivex Files │  One-click publish     │
 │  API Keys    │  CDN Delivery│  Custom domains        │
 │  Roles/RBAC  │  Uploads     │  SSL + Cloudflare      │
 └──────────────┴──────────────┴────────────────────────┘

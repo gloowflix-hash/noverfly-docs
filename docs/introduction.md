@@ -68,7 +68,7 @@ NoverFly is built on modern, battle-tested technologies:
 | Backend | Node.js / Fastify |
 | Database | PostgreSQL 16 |
 | Cache | Redis 7 |
-| Storage | S3-compatible (OVH Object Storage) |
+| Storage | Flivex Cloud Storage |
 | Workers | BullMQ (background jobs) |
 | CDN | Cloudflare |
 | Reverse Proxy | Caddy 2 |

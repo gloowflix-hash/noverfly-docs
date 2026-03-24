@@ -276,7 +276,7 @@ X-RateLimit-Reset: 1705312800
 │  • Marketing  │  • REST API (api.noverfly.com)      │
 │  • Dashboard  │  • PostgreSQL 16 (BaaS database)    │
 │  • GlowDesign │  • Redis 7 (cache + real-time)      │
-│  • Help Center│  • S3 Storage (OVH)                 │
+│  • Help Center│  • Flivex Cloud Storage              │
 │  • Dev Portal │  • BullMQ Workers + WebSocket        │
 └───────────────┴─────────────────────────────────────┘
 ```

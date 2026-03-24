@@ -31,7 +31,7 @@ NoverFly takes security seriously. This page outlines how we protect your data, 
 
 ### At Rest
 - **PostgreSQL** — Database encrypted at disk level via OVH infrastructure
-- **S3 Storage** — Server-side encryption (SSE) for all uploaded files
+- **Flivex Storage** — Server-side encryption (SSE) for all uploaded files
 - **Redis** — In-memory data protected by private network isolation
 - **Backups** — Encrypted daily backups retained for 30 days
 
@@ -116,7 +116,7 @@ Referrer-Policy: strict-origin-when-cross-origin
 - **File type validation** — Only allowed MIME types accepted
 - **File size limits** — Per-plan upload limits enforced
 - **Virus scanning** — Uploads scanned for malware
-- **Isolated storage** — Files stored in S3 with per-tenant path isolation
+- **Isolated storage** — Files stored in Flivex Cloud with per-tenant path isolation
 - **Signed URLs** — Private files accessed via time-limited signed URLs
 - **No execution** — Uploaded files are never executed server-side
 

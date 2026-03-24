@@ -237,7 +237,7 @@ Upload and manage media files:
 - **Documents** — PDF, DOC
 - **Fonts** — TTF, WOFF, WOFF2
 
-All assets are stored in S3-compatible cloud storage with CDN delivery.
+All assets are stored in Flivex Cloud Storage with CDN delivery.
 
 ---
 
