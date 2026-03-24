@@ -1,0 +1,41 @@
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "NoverFly API",
+  "description": "All-in-one SaaS platform REST API — website builder, application builder, CMS, e-commerce, BaaS database, AI design tools",
+  "url": "https://noverfly.com",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "author": {
+    "@type": "Organization",
+    "name": "Gloowflix Cloud",
+    "url": "https://noverfly.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free tier available"
+  },
+  "softwareHelp": {
+    "@type": "WebAPI",
+    "name": "NoverFly REST API",
+    "url": "https://api.noverfly.com/v1",
+    "documentation": "https://documenter.getpostman.com/view/53467544/2sBXijLYKF",
+    "termsOfService": "https://noverfly.com/terms"
+  },
+  "keywords": [
+    "NoverFly",
+    "API",
+    "website builder",
+    "application builder",
+    "CMS",
+    "e-commerce",
+    "BaaS",
+    "database",
+    "SaaS platform",
+    "REST API",
+    "no-code",
+    "GlowDesign"
+  ]
+}

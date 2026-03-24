@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use NoverFly API, please cite it as below."
+title: "NoverFly API Documentation"
+type: software
+authors:
+  - name: "Gloowflix Cloud"
+url: "https://noverfly.com"
+repository-code: "https://github.com/gloowflix-hash/noverfly-docs"
+license: MIT
+keywords:
+  - noverfly
+  - api
+  - website-builder
+  - application-builder
+  - cms
+  - ecommerce
+  - baas
+  - database
+  - saas
+  - rest-api
