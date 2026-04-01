@@ -2,15 +2,16 @@
 
 This page documents the authentication model currently used by the deployed NoverFly stack.
 
-## Auth Modes
+## Auth Overview
 
-NoverFly currently uses three practical authentication modes.
+NoverFly currently uses four practical auth surfaces.
 
-| Mode | Used by | Header |
+| Surface | Used by | Main entrypoint |
 |---|---|---|
-| Dashboard JWT | Admin dashboard, tenants, sites, API key management | `Authorization: Bearer ...` |
-| Site-user JWT | End users of a specific site/app | `Authorization: Bearer ...` |
-| API key | External integrations and automations | `X-Api-Key: gfk_...` or `X-Api-Key: gfc_...` |
+| Dashboard JWT | Admin dashboard, tenants, sites, API key management | `/v1/auth/*` |
+| Developer API keys | External integrations and automations | `X-Api-Key: gfk_...` or `X-Api-Key: gfc_...` |
+| App auth through Data API | Headless apps where the site is resolved by the `gfk_` key | `/v1/api/data/auth/*` or `/api/auth/*` |
+| Site-user JWT | End users inside a specific site or app | `/v1/app/:siteId/auth/*` |
 
 ---
 
@@ -41,32 +42,13 @@ Content-Type: application/json
 | `/v1/sites/:siteId/api-keys*` | API key management |
 | `/v1/sites/:siteId/publish` | Publish flow |
 
-Use `X-Tenant-Id` only when the dashboard route contract requires tenant context.
+Use `X-Tenant-Id` only when the dashboard route contract explicitly requires tenant context.
 
 ---
 
-## 2. Site-user JWT
+## 2. Developer API Keys
 
-Use site-user JWT for end users inside a site or application.
-
-Main routes:
-
-| Method | Route |
-|---|---|
-| `POST` | `/v1/app/:siteId/auth/register` |
-| `POST` | `/v1/app/:siteId/auth/login` |
-| `GET` | `/v1/app/:siteId/auth/me` |
-| `PATCH` | `/v1/app/:siteId/auth/me` |
-| `POST` | `/v1/app/:siteId/auth/refresh` |
-| `POST` | `/v1/app/:siteId/auth/logout` |
-
-This auth mode is scoped to a single site.
-
----
-
-## 3. API Keys
-
-API keys are the standard way to access the developer APIs from external backend code.
+API keys are the standard way to access the developer APIs from external code.
 
 There are two key families:
 
@@ -105,44 +87,106 @@ Key management is done with dashboard JWT auth.
 | `PATCH` | `/v1/sites/:siteId/api-keys/:keyId` | Activate or deactivate |
 | `DELETE` | `/v1/sites/:siteId/api-keys/:keyId` | Revoke |
 
-### Create a key
+---
+
+## 3. App Auth Through the Data API
+
+This is the auth surface many headless apps use in practice.
+
+The site is resolved by the `gfk_` key, so the app does not need to send a `siteId` in the route path.
+
+Bootstrap requests use the key:
 
 ```http
-POST /v1/sites/:siteId/api-keys
-Authorization: Bearer YOUR_ACCESS_TOKEN
-Content-Type: application/json
-
-{
-  "name": "Backend production",
-  "keyType": "SECRET",
-  "permission": "ADMIN",
-  "rateLimit": 60
-}
+X-Api-Key: gfk_YOUR_SECRET_KEY
 ```
 
-### Example: use `gfk_` on the Data API
+Main routes:
+
+| Method | Route | Notes |
+|---|---|---|
+| `GET` | `/v1/api/data/auth/config` | Read enabled auth providers for the key's site |
+| `POST` | `/v1/api/data/auth/register` | Register a site user |
+| `POST` | `/v1/api/data/auth/login` | Login a site user |
+| `GET` | `/v1/api/data/auth/me` | Read current profile using bearer token |
+| `PATCH` | `/v1/api/data/auth/me` | Update current profile using bearer token |
+| `POST` | `/v1/api/data/auth/refresh` | Refresh a site-user session |
+| `POST` | `/v1/api/data/auth/logout` | Logout a site-user session |
+
+Short alias:
+
+- `/api/auth/config`
+- `/api/auth/register`
+- `/api/auth/login`
+- `/api/auth/me`
+- `/api/auth/refresh`
+- `/api/auth/logout`
+
+### Register a user through the Data API
 
 ```bash
-curl https://api.noverfly.com/v1/api/data/collections \
-  -H "X-Api-Key: gfk_YOUR_SECRET_KEY"
-```
-
-### Example: use `gfc_` on the Cloud API
-
-```bash
-curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
-  -H "X-Api-Key: gfc_YOUR_CLOUD_KEY" \
+curl -X POST https://api.noverfly.com/v1/api/data/auth/register \
+  -H "X-Api-Key: gfk_YOUR_SECRET_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"filename":"photo.jpg","mime_type":"image/jpeg","size_bytes":245000}'
+  -d '{"email":"user@example.com","password":"StrongPass123","displayName":"User"}'
 ```
+
+### Login through the Data API
+
+```bash
+curl -X POST https://api.noverfly.com/v1/api/data/auth/login \
+  -H "X-Api-Key: gfk_YOUR_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"StrongPass123"}'
+```
+
+After login, use the returned access token as a bearer token for `/auth/me`, `/auth/refresh`, and `/auth/logout`.
+
+---
+
+## 4. Site-user JWT API
+
+Use site-user JWT for end users inside a site or application when you already know the site ID.
+
+Main routes:
+
+| Method | Route |
+|---|---|
+| `POST` | `/v1/app/:siteId/auth/register` |
+| `POST` | `/v1/app/:siteId/auth/login` |
+| `GET` | `/v1/app/:siteId/auth/me` |
+| `PATCH` | `/v1/app/:siteId/auth/me` |
+| `POST` | `/v1/app/:siteId/auth/refresh` |
+| `POST` | `/v1/app/:siteId/auth/logout` |
+| `POST` | `/v1/app/:siteId/auth/forgot-password` |
+| `POST` | `/v1/app/:siteId/auth/reset-password` |
+| `POST` | `/v1/app/:siteId/auth/verify-email` |
+| `POST` | `/v1/app/:siteId/auth/resend-verification` |
+| `POST` | `/v1/app/:siteId/auth/mfa/totp/setup` |
+| `POST` | `/v1/app/:siteId/auth/mfa/totp/verify` |
+| `POST` | `/v1/app/:siteId/auth/mfa/totp/disable` |
+| `POST` | `/v1/app/:siteId/auth/me/avatar` |
+| `GET` | `/v1/app/:siteId/auth/google` |
+| `GET` | `/v1/app/:siteId/auth/google/callback` |
+
+There is also a public mirror used by some public/social site flows:
+
+- `/v1/public/sites/:siteId/auth/register`
+- `/v1/public/sites/:siteId/auth/login`
+- `/v1/public/sites/:siteId/auth/refresh`
+- `/v1/public/sites/:siteId/auth/me`
+- `/v1/public/sites/:siteId/auth/logout`
+
+This auth mode is scoped to a single site.
 
 ---
 
 ## Security Notes
 
 - Never expose dashboard JWT tokens in frontend bundles.
-- Never expose `gfk_` or `gfc_` keys in frontend bundles.
-- Use server-side code for all developer API calls.
+- Never publish real `gfk_` or `gfc_` keys in repos or public docs.
+- For public production apps, prefer calling your own backend instead of exposing developer API keys directly.
+- If you use a frontend-only dev setup, use environment variables and short-lived test keys only.
 - Rotate keys when they are no longer needed.
 - Prefer the minimum permission level required.
 
@@ -151,6 +195,6 @@ curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
 ## Summary Rule
 
 - Use dashboard JWT for admin and management routes.
-- Use site-user JWT for end users of a site.
-- Use `gfk_` for structured data.
+- Use `gfk_` for structured data and app-scoped auth bootstrap.
 - Use `gfc_` for storage and media services.
+- Use site-user bearer tokens for `/auth/me`, `/auth/refresh`, and user-session flows.
