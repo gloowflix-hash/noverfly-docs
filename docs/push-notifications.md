@@ -114,13 +114,20 @@ Targeting fields are mutually compatible. Choose one or several:
 
 ---
 
-## Cloud API Route (`gfc_` key)
+## Cloud API Routes (`gfc_` key)
 
-For server-to-server integrations or third-party apps, use the Cloud API. The `gfc_` key already resolves the tenant scope.
+For server-to-server integrations or third-party apps, use the Cloud API. The `gfc_` key already resolves the tenant scope, so no `tenantId` is required in the path.
 
-| Method | Route | Auth |
+| Method | Route | Description |
 |---|---|---|
-| `POST` | `/v1/cloud/push/send` | `X-API-Key: gfc_...` |
+| `GET` | `/v1/cloud/push/status` | Same payload as `/v1/push/status`, scoped to the key's tenant |
+| `POST` | `/v1/cloud/push/tokens` | Register a device token without a Dashboard JWT |
+| `DELETE` | `/v1/cloud/push/tokens/:tokenId` | Deactivate a token |
+| `POST` | `/v1/cloud/push/send` | Send a push from any backend |
+
+All four routes require `X-API-Key: gfc_...`.
+
+### Send a push
 
 ```bash
 curl -X POST https://api.noverfly.com/v1/cloud/push/send \
@@ -132,6 +139,21 @@ curl -X POST https://api.noverfly.com/v1/cloud/push/send \
     "link": "https://app.noverfly.com/promo",
     "userIds": ["uuid-1", "uuid-2"],
     "data": { "screen": "promo" }
+  }'
+```
+
+### Register a token from a third-party backend
+
+```bash
+curl -X POST https://api.noverfly.com/v1/cloud/push/tokens \
+  -H "X-API-Key: gfc_YOUR_CLOUD_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "platform": "ANDROID",
+    "provider": "FCM",
+    "token": "FCM_DEVICE_TOKEN",
+    "deviceId": "UNIQUE_DEVICE_ID",
+    "appBundle": "com.noverfly.app"
   }'
 ```
 
