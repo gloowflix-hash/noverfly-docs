@@ -42,6 +42,7 @@ Ces trois sockets n'ont pas le même protocole ni les mêmes tokens.
 
 - [Getting Started](getting-started.md)
 - [Authentication](authentication.md)
+- [Google & Firebase Auth](google-firebase-auth.md) — clés Google / FCM par site
 - [API Reference](api.md)
 - [Mini-services Cloud Scripts](mini-services-cloud-scripts.md) — automatiser sans serveur Node dédié
 - [Fichiers Google → upload signé](cloud-files-google-upload.md) — Drive/Files vers Noverfly + scripts

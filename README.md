@@ -84,6 +84,7 @@ curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
 | [Getting Started](docs/getting-started.md) | onboarding développeur rapide |
 | [Contract Clarification](docs/contract-clarification.md) | clarification `gfk_` / `gfc_` vs contrats legacy |
 | [Authentication](docs/authentication.md) | JWT, clés, permissions, auth app |
+| [Google & Firebase Auth](docs/google-firebase-auth.md) | BYOK Google login + FCM, routes et exemples |
 | [API Reference](docs/api.md) | familles de routes principales |
 | [Database / Data API](docs/database.md) | collections et records |
 | [Cloud Scripts](docs/cloud-scripts.md) | scripts publics et cloud |

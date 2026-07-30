@@ -17,6 +17,7 @@ nav:
       - Contract Clarification: contract-clarification.md
   - Core API:
       - Authentication: authentication.md
+      - Google & Firebase Auth: google-firebase-auth.md
       - API Reference: api.md
       - Database: database.md
   - Cloud Services:
@@ -32,6 +33,7 @@ nav:
       - Music Gateway: music-gateway.md
   - Mobile & Push:
       - Client Apps: client-apps.md
+      - Google & Firebase Auth: google-firebase-auth.md
       - Notifications Guide: notifications-guide.md
       - Push Notifications: push-notifications.md
       - Push FCM Cloud: push-fcm-cloud.md
