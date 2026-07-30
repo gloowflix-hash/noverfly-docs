@@ -24,14 +24,17 @@ nav:
       - Cloud Scripts (opérationnel): cloud-scripts-operational-guide.md
       - DevAPI Automation: devapi-automation.md
       - Live Streaming: live-streaming.md
+      - Visual Search: visual-search.md
       - AI Cloud: ai-cloud-service.md
       - Filter Kit: filter-kit.md
       - Music Gateway: music-gateway.md
   - Mobile & Push:
       - Client Apps: client-apps.md
+      - Notifications Guide: notifications-guide.md
       - Push Notifications: push-notifications.md
       - Push FCM Cloud: push-fcm-cloud.md
   - Realtime:
+      - Calls Audio / Vidéo: calls-audio-video.md
       - Messenger: messenger-realtime.md
       - Realtime Media: realtime-media.md
   - Platform:

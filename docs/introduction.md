@@ -1,60 +1,58 @@
-# Introduction to NoverFly
+# Introduction
 
-NoverFly is a cloud-native SaaS platform that combines site building, application workflows, structured content, storage, publishing, and end-user auth behind one public API host.
+Noverfly expose aujourd'hui une seule API publique principale pour les intégrations développeur :
 
-## Current API Model
+- HTTP : `https://api.noverfly.com`
+- WebSocket principal : `wss://api.noverfly.com/ws`
 
-Production currently uses:
+L'alias `https://api.gloowflix.cloud` reste compatible, mais la documentation ci-dessous utilise toujours l'URL canonique.
 
-- Canonical host: `https://api.noverfly.com`
-- Compatible alias: `https://api.gloowflix.cloud`
+## Les surfaces à connaître
 
-On this host, developers primarily use two API families:
+| Surface | Auth | Usage |
+|---|---|---|
+| Dashboard API | JWT | gestion tenants, sites, publication, clés |
+| Data API | `gfk_` | collections, records, auth applicative |
+| Cloud API | `gfc_` | upload, assets, cloud media |
+| Messenger REST + `/ws` | `gfk_` / `gfc_` + `gfk_` ou JWT sur `/ws` | chat, vocaux, présence, appels historiques |
+| Live Streaming | `gfk_` secret | création, start, stop, playback live |
+| Visual Search | `vst_` côté client, `gfk_` côté serveur | recherche image, texte, média |
+| Visual Events | `ves_` | événements visuels en temps réel |
+| Calls API | activation `gfk_`, exécution `nfk_*` | rooms 1:1, groupe, live rooms |
 
-| API family | Auth | Routes | Purpose |
-|---|---|---|---|
-| Data API | `gfk_` | `/v1/api/data/*`, `/api/*` | Collections and records |
-| Cloud API | `gfc_` | `/v1/api/cloud/*` | Uploads, assets, media search |
+## Règles d'auth simples
 
-There are also dashboard JWT routes and site-user auth routes.
+- `gfk_` : clé serveur liée au site, pour les surfaces data et plusieurs modules site-centric
+- `gfc_` : clé cloud pour uploads, assets, push cloud et certaines routes messenger REST
+- `vst_` : token court Visual Search pour les apps clientes
+- `ves_` : token de session Visual Events pour le WebSocket dédié
+- `nfk_*` : clé Calls API pour les rooms modernes
 
----
+## Ce qui est réellement temps réel
 
-## What NoverFly provides
+Le code actuel documente plusieurs couches realtime distinctes :
 
-- Site and app management
-- Structured data with collections and records
-- File upload and asset management
-- Media search and import
-- Site-user authentication per site
-- Publish and deployment workflows
-- Public content endpoints for published records
+1. `/ws` pour les notifications, la présence, Messenger et les events live.
+2. `/v1/realtime?token=...` pour la Calls API moderne.
+3. `/v1/api/visual-events/ws?...&token=ves_...` pour les flux visuels.
 
----
+Ces trois sockets n'ont pas le même protocole ni les mêmes tokens.
 
-## Multi-tenant model
+## Documentation recommandée
 
-NoverFly is multi-tenant, but developer API keys are already site-scoped.
-
-That means:
-
-- dashboard JWT routes may need tenant context
-- `gfk_` and `gfc_` routes do not need `X-Tenant-Id`
-- the key itself already resolves tenant and site scope
-
----
-
-## Key rule
-
-- use `gfk_` for structured data
-- use `gfc_` for cloud/media workflows
-- use `Authorization: Bearer` for dashboard management flows
-
----
-
-## Next steps
-
+- [Getting Started](getting-started.md)
 - [Authentication](authentication.md)
 - [API Reference](api.md)
-- [Database / Data API](database.md)
-- [Build Applications](applications.md)
+- [Appels audio / vidéo](calls-audio-video.md)
+- [Live Streaming](live-streaming.md)
+- [Notifications Guide](notifications-guide.md)
+- [Visual Search](visual-search.md)
+
+## Quand utiliser quoi ?
+
+- besoin de données structurées : Data API `gfk_`
+- besoin d'uploads et assets : Cloud API `gfc_`
+- besoin de chat et d'appels 1:1 historiques : Messenger
+- besoin de groupe / live rooms : Calls API
+- besoin de diffusion live liée à un site : Live Streaming
+- besoin de recherche visuelle et d'événements visuels : Visual Search + Visual Events

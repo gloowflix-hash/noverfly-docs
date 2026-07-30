@@ -1,224 +1,128 @@
-# Realtime and Media
+# Realtime media : carte d'orientation
 
-This page documents the realtime, messaging, voice, call, and media-processing capabilities already present in the deployed NoverFly stack.
+Cette page sert de synthèse. Pour les détails opérationnels, utilisez les guides dédiés :
 
----
+- `calls-audio-video.md`
+- `live-streaming.md`
+- `notifications-guide.md`
+- `messenger-realtime.md`
+- `visual-search.md`
 
-## Realtime Transport
+Base URL HTTP : `https://api.noverfly.com`  
+WebSocket principal : `wss://api.noverfly.com/ws`
 
-Canonical realtime endpoint:
+## Les 4 surfaces à ne pas confondre
 
-- `wss://api.noverfly.com/ws`
+| Surface | Ce qu'elle fait | Auth | Guide |
+|---|---|---|---|
+| Messenger historique | chat, présence, vocaux, appels 1:1 | `gfk_` / `gfc_` + `/ws` | `messenger-realtime.md` et `calls-audio-video.md` |
+| Calls API | 1:1, groupe, live rooms | activation `gfk_`, exécution `nfk_*` | `calls-audio-video.md` |
+| Live Streaming | diffusion live pilotée côté site | `gfk_` secret | `live-streaming.md` |
+| Visual Events | événements visuels temps réel séparés | `vst_` puis `ves_` | `visual-search.md` |
 
-Compatible alias:
+## WebSocket principal `/ws`
 
-- `wss://api.gloowflix.cloud/ws`
+Le socket principal couvre :
 
-The WebSocket server supports:
+- présence
+- événements messenger
+- signalisation d'appels Messenger
+- rooms tenant / site / live
+- notifications temps réel
 
-- JWT-authenticated dashboard and site-user sessions
-- API-key app auth for developer-integrated apps
-- tenant-scoped and user-scoped realtime rooms
-- call signaling messages for WebRTC flows
+Auth supportée :
 
-After opening the socket, send an auth message within 10 seconds.
+- JWT dashboard
+- `gfk_` secret + `userId`
 
-### API-key auth example
+Auth refusée :
 
-```json
-{
-  "type": "auth",
-  "payload": {
-    "apiKey": "gfk_YOUR_SECRET_KEY",
-    "userId": "USER_ID"
-  }
-}
-```
+- `gfc_`
+- site-user JWT
 
----
+## Audio / vidéo
 
-## Developer Messenger API
+### Messenger
 
-The deployed platform already exposes a developer messenger surface for existing applications.
+À utiliser si vous êtes déjà dans le modèle conversation / message :
 
-Auth:
-
-- `X-Api-Key: gfk_...`
-- or `X-Api-Key: gfc_...`
-
-Main routes:
-
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/v1/cloud/messenger/rtc-config` | Return ICE server config and signal endpoint |
-| `POST` | `/v1/cloud/messenger/conversations` | Create a direct conversation |
-| `GET` | `/v1/cloud/messenger/conversations` | List a user's conversations |
-| `POST` | `/v1/cloud/messenger/conversations/:conversationId/messages` | Send a message |
-| `GET` | `/v1/cloud/messenger/conversations/:conversationId/messages` | Read message history |
-| `POST` | `/v1/cloud/messenger/conversations/:conversationId/voice` | Create a voice-message record |
-| `GET` | `/v1/cloud/messenger/calls` | Read call history |
-
-Typical app flow:
-
-1. Get RTC config from `/v1/cloud/messenger/rtc-config`.
-2. Open `/ws` and authenticate.
-3. Create or list conversations.
-4. Send text messages through the REST API.
-5. Upload audio to Cloud storage, then create a voice message record.
-6. Use WebSocket call signaling for audio or video calls.
-
----
-
-## Voice Messages
-
-Voice messages are already part of the deployed messenger stack.
-
-REST route:
-
+- `GET /v1/cloud/messenger/rtc-config`
+- `POST /v1/cloud/messenger/conversations`
+- `GET /v1/cloud/messenger/conversations`
+- `POST /v1/cloud/messenger/conversations/:conversationId/messages`
 - `POST /v1/cloud/messenger/conversations/:conversationId/voice`
+- `GET /v1/cloud/messenger/calls`
+- événements `/ws` : `call:initiate`, `call:offer`, `call:answer`, `call:ice`, `call:hangup`, `call:reject`, `call:busy`
 
-Expected body fields include:
+### Calls API
 
-- `senderId`
-- `durationMs`
-- `originalKey`
-- `sizeBytes`
+À utiliser pour les rooms produit :
 
-There is also an internal voice-processing webhook used by the Flivex service:
+- `POST /v1/calls`
+- `POST /v1/calls/:callId/join-token`
+- `GET /v1/calls/:callId/participants`
+- `POST /v1/live/rooms`
+- `/v1/realtime?token=...`
 
-- `POST /v1/cloud/messenger/webhooks/voice-processed`
+## Live
 
-When voice media processing completes, the platform can push realtime updates such as processed waveform data and ready-state notifications.
+Le module live est distinct du module calls :
 
----
+- `POST /v1/cloud/live/streams`
+- `POST /v1/cloud/live/streams/:id/start`
+- `GET /v1/cloud/live/streams/:id/playback`
+- `POST /v1/cloud/live/streams/:id/end`
 
-## Audio and Video Calls
+Événements WS :
 
-WebRTC call signaling is already wired in the WebSocket server.
+- `live:status`
+- `live:viewer_count`
+- `live:chat`
+- `live:comment`
+- `live:reaction`
 
-Current signaling message types include:
+## Uploads et assets
 
-- `call:initiate`
-- `call:offer`
-- `call:answer`
-- `call:ice`
-- `call:hangup`
-- `call:reject`
-- `call:busy`
-
-Call logging is already present and the deployed stack tracks:
-
-- call count usage
-- total call minutes quotas
-- video-call feature availability by plan
-
-Important feature flags and quotas include:
-
-- `messenger_enabled`
-- `messenger_video_calls`
-- `max_messages_month`
-- `max_voice_messages_month`
-- `max_calls_month`
-- `max_call_minutes_month`
-
----
-
-## Flivex Media Processing
-
-The Cloud API can create assets for images, video, and audio. When Flivex integration is enabled, the API notifies the Flivex media engine after asset creation.
-
-That media engine can then call back into:
-
-- `POST /webhooks/flivex`
-
-Current Flivex callback event types include:
-
-- `media.probed`
-- `media.ready`
-- `media.failed`
-
-When media is ready, asset metadata can be enriched with:
-
-- `poster_url`
-- `preview_url`
-- `playback_url`
-- `hls_url`
-- `thumbnail_url`
-- `renditions`
-- `image_variants`
-
-This means the deployed platform already supports processed-media flows for:
-
-- uploaded video
-- uploaded audio
-- uploaded image assets
-
----
-
-## Hosted Video and Streaming
-
-The platform already includes routes for hosted video workflows.
-
-Dashboard-managed routes:
-
-| Method | Route | Description |
-|---|---|---|
-| `POST` | `/v1/tenants/:tenantId/video/connect` | Connect a video provider |
-| `POST` | `/v1/tenants/:tenantId/video/test` | Test the video provider connection |
-| `POST` | `/v1/sites/:siteId/videos` | Add a video |
-| `GET` | `/v1/sites/:siteId/videos` | List videos |
-| `POST` | `/v1/sites/:siteId/videos/mp4-url/validate` | Validate a direct MP4 URL |
-| `POST` | `/v1/sites/:siteId/videos/mp4-url` | Add a direct MP4 video |
-| `POST` | `/v1/public/sites/:siteId/videos/:videoId/access` | Check access to a monetized public video |
-
-The deployed limits model also includes a `video_hosting` feature flag.
-
----
-
-## Music Streaming
-
-The music module already exposes a track streaming route:
-
-- `GET /v1/tenants/:tenantId/music/tracks/:trackId/stream`
-
-This route returns a stream URL for the requested track.
-
----
-
-## Cloud Upload and Media Search
-
-The Cloud API already covers the media input side used by apps before messaging or streaming features consume those assets.
-
-Routes already present today:
+Les briques media d'entrée passent par la Cloud API :
 
 - `POST /v1/api/cloud/upload`
 - `POST /v1/api/cloud/upload/commit`
 - `POST /v1/api/cloud/upload/direct`
 - `GET /v1/api/cloud/assets`
 - `DELETE /v1/api/cloud/assets/:assetId`
-- `GET /v1/api/cloud/search/images`
-- `GET /v1/api/cloud/search/videos`
-- `GET /v1/api/cloud/search/gifs`
-- `GET /v1/api/cloud/search/icons`
-- `GET /v1/api/cloud/search/3d`
-- `POST /v1/api/cloud/import/image`
 
-This lets applications combine:
+Elles servent ensuite :
 
-- their own uploads
-- external media discovery
-- processed playback URLs
-- realtime chat and call flows
+- aux messages vocaux
+- aux aperçus / playbacks vidéo
+- au Visual Search
+- aux pipelines Flivex
 
----
+## Visual Search et Visual Events
 
-## Summary
+Visual Search et Visual Events sont maintenant des surfaces à part entière :
 
-If you need chat, voice, calls, or streaming on NoverFly today:
+- token court client `vst_`
+- session temps réel `ves_`
+- recherche image / texte / média
+- événements `visual.object.*`, `visual.scene.changed`, `visual.effect.triggered`
 
-- use `https://api.noverfly.com`
-- use `/v1/cloud/messenger/*` for developer-integrated chat flows
-- use `wss://api.noverfly.com/ws` for realtime signaling
-- use `/v1/api/cloud/*` for uploads and media input
-- rely on Flivex callbacks for processed media outputs
-- use the existing video and music route families where dashboard-managed media is needed
+Voir `visual-search.md`.
+
+## Notifications liées au realtime media
+
+Le backend envoie déjà :
+
+- pushes d'appels entrants
+- notifications métier live (`LIVE_STARTED`, `LIVE_ENDED`, `LIVE_FAILED`)
+- notifications messenger (`MESSENGER_MESSAGE`, `MESSENGER_VOICE_MESSAGE`, appels manqués)
+- contrats WS `notification:new`, `messenger:*`, `call:*`, `live:*`
+
+Voir `notifications-guide.md`.
+
+## Résumé
+
+- si vous voulez des conversations et appels 1:1 couplés au chat, restez sur `Messenger`
+- si vous voulez des rooms audio/vidéo/groupe/live, utilisez la `Calls API`
+- si vous voulez de la diffusion live site, utilisez le module `live`
+- si vous voulez du vision realtime, passez par `Visual Search` + `Visual Events`

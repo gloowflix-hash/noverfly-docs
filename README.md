@@ -1,71 +1,44 @@
-# NoverFly API Documentation
+# Noverfly API Documentation
 
-> Official developer documentation for the NoverFly platform API.
->
-> This documentation reflects the API contract currently deployed in production.
+> Documentation développeur de référence pour le contrat actuellement déployé en production.
 
 ![API](https://img.shields.io/badge/API-v1-blue)
 ![Status](https://img.shields.io/badge/status-active-success)
 [![Website](https://img.shields.io/badge/Website-noverfly.com-brightgreen)](https://noverfly.com)
 [![API Base URL](https://img.shields.io/badge/API-api.noverfly.com-orange)](https://api.noverfly.com)
 
----
+## Base URLs
 
-## Production Model
+- HTTP canonique : `https://api.noverfly.com`
+- Alias compatible : `https://api.gloowflix.cloud`
+- WebSocket canonique : `wss://api.noverfly.com/ws`
 
-NoverFly currently exposes one public API host:
+## Familles d'auth
 
-- Main host: `https://api.noverfly.com`
-- Compatible alias: `https://api.gloowflix.cloud`
+| Auth | Usage |
+|---|---|
+| JWT dashboard | back-office, tenants, sites, gestion des clés |
+| `gfk_` secret | Data API, auth applicative, live, Visual Search serveur |
+| `gfc_` cloud | upload, assets, push cloud, messenger REST |
+| `vst_` | Visual Search côté client |
+| `ves_` | WebSocket Visual Events |
+| `nfk_*` | Calls API moderne |
 
-On that same host, there are two main developer API families:
+## Guides prioritaires
 
-| API family | Auth | Main routes | Purpose |
-|---|---|---|---|
-| Data API | `X-Api-Key: gfk_...` | `/v1/api/data/*` and `/api/*` | Collections, records, app auth bootstrap |
-| Cloud API | `X-Api-Key: gfc_...` | `/v1/api/cloud/*` | Upload, assets, media search, import |
+| Guide | Ce qu'il couvre |
+|---|---|
+| [Getting Started](docs/getting-started.md) | parcours de démarrage développeur |
+| [Authentication](docs/authentication.md) | JWT, `gfk_`, `gfc_`, permissions |
+| [API Reference](docs/api.md) | familles de routes principales |
+| [Appels audio / vidéo](docs/calls-audio-video.md) | Messenger WebRTC + Calls API `nfk_*` |
+| [Live Streaming](docs/live-streaming.md) | création, start, stop, playback, diagnostics |
+| [Notifications Guide](docs/notifications-guide.md) | push, realtime WS, contrats |
+| [Visual Search](docs/visual-search.md) | `vst_`, activation, recherche, Visual Events |
 
-Important points:
+## Quick start
 
-- `gfk_` and `gfc_` are real production keys already used by existing applications.
-- Both APIs go through `api.noverfly.com`.
-- There is no separate public storage host required for the current deployed Cloud API.
-- For `gfk_` and `gfc_` routes, the key already resolves the site and tenant scope.
-- Do not add `X-Tenant-Id` on developer API requests authenticated by `gfk_` or `gfc_`.
-
----
-
-## What You Can Build Today
-
-The deployed stack already covers more than basic CRUD:
-
-- data-first apps and headless backends with collections and records
-- tenant, site, domain, publish, clone, import, and headless-site flows
-- end-user authentication for apps and sites
-- file upload, asset library, media search, and external image import
-- Flivex media processing for image, video, and audio assets
-- realtime messaging, voice messages, audio calls, and video calls
-- hosted video workflows, public video access checks, and music streaming routes
-
----
-
-## Safe Examples Only
-
-All examples in this docs repository use placeholders only:
-
-- `YOUR_ACCESS_TOKEN`
-- `YOUR_SITE_ID`
-- `YOUR_TENANT_ID`
-- `gfk_YOUR_SECRET_KEY`
-- `gfc_YOUR_CLOUD_KEY`
-
-Do not paste real production keys into public frontend code, public repos, or shared documentation.
-
----
-
-## Quick Start
-
-### 1. Login to the dashboard
+### 1. Se connecter au dashboard
 
 ```bash
 curl -X POST https://api.noverfly.com/v1/auth/login \
@@ -73,28 +46,28 @@ curl -X POST https://api.noverfly.com/v1/auth/login \
   -d '{"email":"you@example.com","password":"your-password"}'
 ```
 
-### 2. Create or list a site
+### 2. Créer ou lister un site
 
 ```bash
 curl https://api.noverfly.com/v1/tenants/YOUR_TENANT_ID/sites \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-### 3. Ensure default API keys for a site
+### 3. Garantir les clés par défaut du site
 
 ```bash
 curl -X POST https://api.noverfly.com/v1/sites/YOUR_SITE_ID/ensure-api-keys \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-### 4. Read collections with a `gfk_` key
+### 4. Tester la Data API avec `gfk_`
 
 ```bash
 curl https://api.noverfly.com/v1/api/data/collections \
   -H "X-Api-Key: gfk_YOUR_SECRET_KEY"
 ```
 
-### 5. Start a media upload with a `gfc_` key
+### 5. Tester la Cloud API avec `gfc_`
 
 ```bash
 curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
@@ -103,76 +76,65 @@ curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
   -d '{"filename":"photo.jpg","mime_type":"image/jpeg","size_bytes":245000}'
 ```
 
----
-
-## Documentation Index
+## Index documentation
 
 | Document | Description |
 |---|---|
-| [Introduction](docs/introduction.md) | Platform overview and current deployment model |
-| [Getting Started](docs/getting-started.md) | Step-by-step onboarding |
-| [Contract Clarification](docs/contract-clarification.md) | `gfk_`/`gfc_` vs legacy OpenAPI |
-| [Authentication](docs/authentication.md) | Dashboard JWT, site-user JWT, `gfk_`, `gfc_`, permissions, app auth |
-| [API Reference](docs/api.md) | Main route families and integration rules |
-| [Database / Data API](docs/database.md) | Collections and records API with `gfk_` |
-| [Cloud Scripts](docs/cloud-scripts.md) | Programmable scripts, feed, public routes |
-| [Cloud Scripts — guide opérationnel](docs/cloud-scripts-operational-guide.md) | BullMQ, triggers, multi-collections, présence |
-| [DevAPI Automation](docs/devapi-automation.md) | Workflows, functions, events |
-| [Build Applications](docs/applications.md) | Vite proxy example, frontend helper example, app-building flows |
-| [Client Apps Android](docs/client-apps.md) | Register device, FCM, incoming calls |
-| [Push Notifications](docs/push-notifications.md) | FCM, APNs, Expo, Web Push VAPID |
-| [Push FCM Cloud (DevAPI)](docs/push-fcm-cloud.md) | Tenant FCM config, chat/call data-only |
-| [Live Streaming](docs/live-streaming.md) | `/v1/cloud/live/streams/*` |
-| [AI Cloud Service](docs/ai-cloud-service.md) | `/v1/cloud/ai/*` |
-| [Messenger & Realtime](docs/messenger-realtime.md) | Flivex Messenger REST + WebSocket |
-| [Filter Kit](docs/filter-kit.md) | AR filters DevAPI |
-| [Music Gateway](docs/music-gateway.md) | Music streaming DevAPI |
-| [Payments (GFK)](docs/payments.md) | Merchant payments infrastructure |
-| [Migrations & Jobs](docs/migrations-and-jobs.md) | SQL migrations + BullMQ workers |
-| [Realtime and Media](docs/realtime-media.md) | Chat, voice, calls, Flivex processing |
-| [CMS](docs/cms.md) | Content modeling and CMS concepts |
-| [GlowDesign](docs/glowdesign.md) | Visual editor |
-| [E-Commerce](docs/ecommerce.md) | Commerce capabilities |
-| [Deployment](docs/deployment.md) | Publish flow and delivery |
-| [Security](docs/security.md) | Security principles |
+| [Introduction](docs/introduction.md) | vue d'ensemble de la plateforme et des surfaces d'auth |
+| [Getting Started](docs/getting-started.md) | onboarding développeur rapide |
+| [Contract Clarification](docs/contract-clarification.md) | clarification `gfk_` / `gfc_` vs contrats legacy |
+| [Authentication](docs/authentication.md) | JWT, clés, permissions, auth app |
+| [API Reference](docs/api.md) | familles de routes principales |
+| [Database / Data API](docs/database.md) | collections et records |
+| [Cloud Scripts](docs/cloud-scripts.md) | scripts publics et cloud |
+| [Cloud Scripts (opérationnel)](docs/cloud-scripts-operational-guide.md) | BullMQ, triggers, présence |
+| [DevAPI Automation](docs/devapi-automation.md) | automatisation et workflows |
+| [Applications](docs/applications.md) | intégration frontend / backend |
+| [Client Apps](docs/client-apps.md) | devices mobiles et tokens |
+| [Notifications Guide](docs/notifications-guide.md) | guide unifié push + realtime |
+| [Push Notifications](docs/push-notifications.md) | routes tenant JWT |
+| [Push FCM Cloud](docs/push-fcm-cloud.md) | FCM cloud, chat et incoming calls |
+| [Appels audio / vidéo](docs/calls-audio-video.md) | appels 1:1, groupe, live rooms |
+| [Messenger & Realtime](docs/messenger-realtime.md) | guide Messenger historique |
+| [Realtime Media](docs/realtime-media.md) | synthèse des surfaces realtime |
+| [Live Streaming](docs/live-streaming.md) | live site à site |
+| [Visual Search](docs/visual-search.md) | activation, recherche, events |
+| [AI Cloud Service](docs/ai-cloud-service.md) | IA cloud |
+| [Filter Kit](docs/filter-kit.md) | filtres AR |
+| [Music Gateway](docs/music-gateway.md) | streaming musique |
+| [Payments](docs/payments.md) | paiements |
+| [Migrations & Jobs](docs/migrations-and-jobs.md) | migrations SQL et workers |
+| [CMS](docs/cms.md) | concepts CMS |
+| [GlowDesign](docs/glowdesign.md) | éditeur visuel |
+| [E-Commerce](docs/ecommerce.md) | commerce |
+| [Deployment](docs/deployment.md) | publication et livraison |
+| [Security](docs/security.md) | principes sécurité |
 
----
+## Familles de routes à connaître
 
-## Core Route Families
-
-| Category | Routes | Auth |
+| Famille | Routes | Auth |
 |---|---|---|
-| Dashboard auth | `/v1/auth/*` | JWT |
-| Tenants | `/v1/tenants/*` | JWT |
-| Sites | `/v1/sites/*` and `/v1/tenants/:tenantId/sites` | JWT |
-| API key management | `/v1/sites/:siteId/api-keys*` | JWT |
-| Data API | `/v1/api/data/*` and `/api/*` | `gfk_` |
+| Dashboard | `/v1/auth/*`, `/v1/tenants/*`, `/v1/sites/*` | JWT |
+| Data API | `/v1/api/data/*`, `/api/*` | `gfk_` |
 | Cloud API | `/v1/api/cloud/*` | `gfc_` |
-| Developer messenger | `/v1/cloud/messenger/*` | `gfk_` or `gfc_` |
-| Live streaming | `/v1/cloud/live/streams/*` | `gfk_` SECRET |
-| AI Cloud | `/v1/cloud/ai/*` | `gfk_` / JWT |
-| Cloud Scripts | `/v1/public/sites/:siteId/scripts/*` | Public / `gfk_` |
-| Client devices | `/api/client/register-device` | GFK public + optional JWT |
-| WebSocket realtime | `/ws` | JWT or API-key app auth |
-| Push notifications | `/v1/push/*`, `/v1/tenants/:tenantId/push/*`, `/v1/cloud/push/*` | Public, JWT, or `gfc_` |
-| Site-user auth | `/v1/app/:siteId/auth/*` and `/v1/public/sites/:siteId/auth/*` | Site-user JWT |
-| Public content | `/v1/public/sites/:siteId/collections/*` | Public |
-| Video and music | `/v1/sites/:siteId/videos/*`, `/v1/tenants/:tenantId/music/*` | JWT |
+| Messenger REST | `/v1/cloud/messenger/*` | `gfk_` ou `gfc_` |
+| Live Streaming | `/v1/cloud/live/streams/*` | `gfk_` secret |
+| Push Cloud | `/v1/cloud/push/*` | `gfk_` ou `gfc_` |
+| Notifications Cloud | `/v1/cloud/notifications/*` | `gfk_` ou `gfc_` |
+| Visual Search | `/v1/api/visual-search/*` | `vst_` ou `gfk_` |
+| Visual Events | `/v1/api/visual-events/*` | `vst_` puis `ves_` |
+| Calls API | `/v1/calls/*`, `/v1/live/rooms/*`, `/v1/realtime` | `nfk_*` |
 
----
+## Règles simples pour les intégrateurs
 
-## Notes for Integrators
+- utilisez `gfk_` pour les données structurées et les surfaces serveur liées au site
+- utilisez `gfc_` pour le cloud media, les assets et le push cloud
+- n'exposez jamais une `gfk_` ou une `gfc_` dans une app publique
+- pour Visual Search côté client, échangez toujours un token court `vst_`
+- pour la Calls API moderne, activez via `gfk_` puis exécutez via `nfk_*`
 
-- Use `gfk_` for structured data and app-scoped auth bootstrap.
-- Use `gfc_` for uploads, assets, media search, and import.
-- `ADMIN` is a permission level, not a different key prefix.
-- Existing integrations should prefer `https://api.noverfly.com` as the canonical base URL.
-- Use `wss://api.noverfly.com/ws` as the canonical realtime endpoint. The `api.gloowflix.cloud` alias remains compatible.
+## Liens
 
----
-
-## Links
-
-- Website: [noverfly.com](https://noverfly.com)
-- API host: [api.noverfly.com](https://api.noverfly.com)
-- Help: [help.noverfly.com](https://help.noverfly.com)
+- Website : [noverfly.com](https://noverfly.com)
+- API host : [api.noverfly.com](https://api.noverfly.com)
+- Repo docs : [gloowflix-hash/noverfly-docs](https://github.com/gloowflix-hash/noverfly-docs)
