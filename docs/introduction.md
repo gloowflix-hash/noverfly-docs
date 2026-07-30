@@ -43,6 +43,8 @@ Ces trois sockets n'ont pas le même protocole ni les mêmes tokens.
 - [Getting Started](getting-started.md)
 - [Authentication](authentication.md)
 - [API Reference](api.md)
+- [Mini-services Cloud Scripts](mini-services-cloud-scripts.md) — automatiser sans serveur Node dédié
+- [Fichiers Google → upload signé](cloud-files-google-upload.md) — Drive/Files vers Noverfly + scripts
 - [Appels audio / vidéo](calls-audio-video.md)
 - [Live Streaming](live-streaming.md)
 - [Notifications Guide](notifications-guide.md)
@@ -52,6 +54,8 @@ Ces trois sockets n'ont pas le même protocole ni les mêmes tokens.
 
 - besoin de données structurées : Data API `gfk_`
 - besoin d'uploads et assets : Cloud API `gfc_`
+- besoin d’un mini-backend sans VPS : Cloud Scripts + triggers / cron
+- besoin d’importer un fichier Google / galerie : upload signé `gfc_` puis trigger script
 - besoin de chat et d'appels 1:1 historiques : Messenger
 - besoin de groupe / live rooms : Calls API
 - besoin de diffusion live liée à un site : Live Streaming

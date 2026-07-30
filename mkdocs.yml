@@ -22,6 +22,8 @@ nav:
   - Cloud Services:
       - Cloud Scripts: cloud-scripts.md
       - Cloud Scripts (opérationnel): cloud-scripts-operational-guide.md
+      - Mini-services Cloud Scripts: mini-services-cloud-scripts.md
+      - Fichiers Google / upload signé: cloud-files-google-upload.md
       - DevAPI Automation: devapi-automation.md
       - Live Streaming: live-streaming.md
       - Visual Search: visual-search.md

@@ -88,6 +88,8 @@ curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
 | [Database / Data API](docs/database.md) | collections et records |
 | [Cloud Scripts](docs/cloud-scripts.md) | scripts publics et cloud |
 | [Cloud Scripts (opérationnel)](docs/cloud-scripts-operational-guide.md) | BullMQ, triggers, présence |
+| [Mini-services Cloud Scripts](docs/mini-services-cloud-scripts.md) | pourquoi créer des scripts, automation, IA |
+| [Fichiers Google → Noverfly](docs/cloud-files-google-upload.md) | upload signé, import, clés dans scripts |
 | [DevAPI Automation](docs/devapi-automation.md) | automatisation et workflows |
 | [Applications](docs/applications.md) | intégration frontend / backend |
 | [Client Apps](docs/client-apps.md) | devices mobiles et tokens |
