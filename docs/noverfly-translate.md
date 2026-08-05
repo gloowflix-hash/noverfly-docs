@@ -107,8 +107,24 @@ Endpoint texte Serverless Flex recommandé :
 - Variable Gloowflix : `RUNPOD_TRANSLATE_ENDPOINT_ID`
 - Worker source : `GLOOWFLIX/V1/services/translate-worker/`
 - Création : `python scripts/create-translate-runpod-endpoint.py`
-- Image custom + `MODEL_PATH` requis pour une traduction réelle
-- Sans modèle : erreur propre `TRANSLATE_MODEL_UNAVAILABLE` / provider — **jamais** de fausse traduction
+
+### Modèles open source commerciaux
+
+| Modèle | Licence | Prod payante |
+|---|---|---|
+| MADLAD-400 3B CT2 (`noverfly-madlad400*`) | Apache-2.0 | oui |
+| OPUS-MT (`noverfly-opus-mt`) | CC-BY-4.0 | oui (attribution) |
+| NLLB-200 | CC-BY-NC-4.0 | **non** (bloqué) |
+
+Env worker :
+
+```env
+MODEL_ID=noverfly-madlad400-int8
+MODEL_HF_ID=Heng666/madlad400-3b-mt-ct2-int8
+TRANSLATE_COMMERCIAL_MODE=true
+```
+
+Sans modèle chargé : erreur propre — **jamais** de fausse traduction.
 
 Santé :
 
