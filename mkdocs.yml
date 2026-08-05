@@ -21,6 +21,7 @@ nav:
       - API Reference: api.md
       - Database: database.md
   - Cloud Services:
+      - Hosting API (React / Vite / Next export): hosting-api.md
       - Cloud Scripts: cloud-scripts.md
       - Cloud Scripts (opérationnel): cloud-scripts-operational-guide.md
       - Mini-services Cloud Scripts: mini-services-cloud-scripts.md
@@ -41,6 +42,8 @@ nav:
       - Calls Audio / Vidéo: calls-audio-video.md
       - Messenger: messenger-realtime.md
       - Realtime Media: realtime-media.md
+  - AI Products:
+      - NoverFly Translate: noverfly-translate.md
   - Platform:
       - Applications: applications.md
       - CMS: cms.md

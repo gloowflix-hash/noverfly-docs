@@ -2,106 +2,142 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/ai-cloud-service/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/api/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/applications/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/authentication/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/calls-audio-video/</loc>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/client-apps/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/cloud-files-google-upload/</loc>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/cloud-scripts-operational-guide/</loc>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/cloud-scripts/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/cms/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/contract-clarification/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/database/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/deployment/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/devapi-automation/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/ecommerce/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/filter-kit/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/getting-started/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/glowdesign/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/google-firebase-auth/</loc>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/hosting-api/</loc>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/introduction/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/live-streaming/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/messenger-realtime/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/migrations-and-jobs/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/mini-services-cloud-scripts/</loc>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/music-gateway/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/notifications-guide/</loc>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/notifications-realtime-contract/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/noverfly-translate/</loc>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/payments/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/push-fcm-cloud/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/push-notifications/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/realtime-media/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
     </url>
     <url>
          <loc>https://gloowflix-hash.github.io/noverfly-docs/security/</loc>
-         <lastmod>2026-05-29</lastmod>
+         <lastmod>2026-08-05</lastmod>
+    </url>
+    <url>
+         <loc>https://gloowflix-hash.github.io/noverfly-docs/visual-search/</loc>
+         <lastmod>2026-08-05</lastmod>
     </url>
 </urlset>

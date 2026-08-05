@@ -32,9 +32,11 @@
 | [Authentication](docs/authentication.md) | JWT, `gfk_`, `gfc_`, permissions |
 | [API Reference](docs/api.md) | familles de routes principales |
 | [Appels audio / vidéo](docs/calls-audio-video.md) | Messenger WebRTC + Calls API `nfk_*` |
+| [NoverFly Translate](docs/noverfly-translate.md) | traduction IA multi-projets `nft_*`, 40 USD/mois |
 | [Live Streaming](docs/live-streaming.md) | création, start, stop, playback, diagnostics |
 | [Notifications Guide](docs/notifications-guide.md) | push, realtime WS, contrats |
 | [Visual Search](docs/visual-search.md) | `vst_`, activation, recherche, Visual Events |
+| [Hosting API](docs/hosting-api.md) | déploiement React/Vite/Next export sur S3 via `gfk_` ADMIN |
 
 ## Quick start
 
@@ -88,6 +90,7 @@ curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
 | [API Reference](docs/api.md) | familles de routes principales |
 | [Database / Data API](docs/database.md) | collections et records |
 | [Cloud Scripts](docs/cloud-scripts.md) | scripts publics et cloud |
+| [Hosting API](docs/hosting-api.md) | releases S3 immuables, domaines, rollback et quotas |
 | [Cloud Scripts (opérationnel)](docs/cloud-scripts-operational-guide.md) | BullMQ, triggers, présence |
 | [Mini-services Cloud Scripts](docs/mini-services-cloud-scripts.md) | pourquoi créer des scripts, automation, IA |
 | [Fichiers Google → Noverfly](docs/cloud-files-google-upload.md) | upload signé, import, clés dans scripts |
@@ -119,6 +122,7 @@ curl -X POST https://api.noverfly.com/v1/api/cloud/upload \
 |---|---|---|
 | Dashboard | `/v1/auth/*`, `/v1/tenants/*`, `/v1/sites/*` | JWT |
 | Data API | `/v1/api/data/*`, `/api/*` | `gfk_` |
+| Hosting | `/v1/hosting/*` | `gfk_` (ADMIN pour déployer) |
 | Cloud API | `/v1/api/cloud/*` | `gfc_` |
 | Messenger REST | `/v1/cloud/messenger/*` | `gfk_` ou `gfc_` |
 | Live Streaming | `/v1/cloud/live/streams/*` | `gfk_` secret |
