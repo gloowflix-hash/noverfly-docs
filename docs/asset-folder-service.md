@@ -1,9 +1,10 @@
 # Asset Folder Service — Noverfly
 
 **Date :** 2026-08-06  
-**API :** `https://api.noverfly.com`
+**API :** `https://api.noverfly.com`  
+**Statut :** Lots 0–3 + Lot 6 partiel (embeddings réellement branchés côté API)
 
-Les Asset Folders organisent le stockage cloud (S3) par dossier / sous-dossier, avec politique d’accès et option embeddings.
+Les Asset Folders organisent le stockage cloud (S3) par dossier / sous-dossier, avec politique d’accès, URLs signées, et option embeddings.
 
 ---
 
@@ -19,6 +20,7 @@ tenants/{tenantId}/sites/{siteId}/folders/{folderId}/assets/{assetId}/original.{
 
 - **Tous objets S3** : image, vidéo, audio, PDF, documents… (types sûrs)
 - **Embeddings / recherche vectorielle** : optionnels, **images seulement**, activables **par dossier**
+- **Lecture fichier** : URL S3 signée après ACL (pas de proxy public pour les assets liés à un dossier, sauf `PUBLIC` + `PUBLIC_READ`)
 
 ---
 
@@ -30,12 +32,20 @@ tenants/{tenantId}/sites/{siteId}/folders/{folderId}/assets/{assetId}/original.{
 | Activer / désactiver embeddings | **ADMIN** |
 | Lister dossiers | READ |
 | Uploader un fichier dans un dossier | READ_WRITE |
+| Obtenir `read-url` / `download-url` | READ (+ `X-End-User-Id` selon politique) |
 
 ---
 
 ## Activer ou non les embeddings
 
-L’admin choisit **par dossier** :
+L’admin choisit **par dossier** sur le `siteId` de sa clé. Les flags sont **appliqués** au moteur Visual Search (pas cosmétique) :
+
+| Flag | Effet |
+|------|--------|
+| `allowEmbeddings=true` | Les nouvelles images du dossier peuvent être indexées |
+| `allowEmbeddings=false` | Pas d’indexation ; désactivation → exclusion / delete vectorielle |
+| `allowVectorSearch=true` | Peut apparaître en recherche visuelle |
+| `allowVectorSearch=false` | Exclu des résultats de recherche |
 
 ```http
 PATCH /v1/asset-folders/{folderId}
@@ -50,7 +60,7 @@ Content-Type: application/json
 }
 ```
 
-Décrocher (plus d’index / recherche vectorielle sur ce dossier) :
+Décrocher :
 
 ```json
 {
@@ -65,8 +75,40 @@ Décrocher (plus d’index / recherche vectorielle sur ce dossier) :
 { "visibility": "PRIVATE", "accessPolicy": "OWNER_ONLY" }
 ```
 
-→ embeddings **impossibles** (sécurité).  
-Le service Visual Search refuse d’indexer ces assets.
+→ embeddings **impossibles**.  
+Embeddings activés ≠ accès public au fichier.
+
+---
+
+## Lecture fichier (URL signée)
+
+Assets liés à un dossier (`BOUND`) :
+
+```http
+POST /v1/assets/{assetId}/read-url
+X-Api-Key: gfk_READ_...
+X-End-User-Id: <uuid>   # requis si OWNER_ONLY / SITE_USERS / …
+
+{
+  "expiresSeconds": 300
+}
+```
+
+Téléchargement :
+
+```http
+POST /v1/assets/{assetId}/download-url
+```
+
+| `accessPolicy` | Qui peut lire |
+|----------------|---------------|
+| `PUBLIC_READ` | Clé READ+ (proxy public OK si `visibility=PUBLIC`) |
+| `API_KEY_SCOPED` | Clé site READ+ |
+| `SITE_USERS` | `X-End-User-Id` requis |
+| `OWNER_ONLY` | Propriétaire (ou ADMIN) |
+| `RECORD_MEMBERS` | Owner pour l’instant (membership chat à venir) |
+
+Le proxy historique `GET /v1/api/cloud/file/{id}` refuse les assets `BOUND` non publics (`BOUND_ASSET_READ_URL_REQUIRED`).
 
 ---
 
@@ -129,7 +171,7 @@ POST /v1/asset-folders/{folderId}/assets/commit
 ```
 
 - PDF / vidéo / audio → stockés S3, **pas** d’embedding
-- Image + `allowEmbeddings=true` → index Visual Search possible
+- Image + `allowEmbeddings=true` → index Visual Search
 
 ---
 
