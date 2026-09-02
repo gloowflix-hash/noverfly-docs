@@ -42,19 +42,29 @@ or any platform that supports HTTP + WebSocket.
 
 ## Authentication
 
-All REST endpoints use **API Key** authentication:
+All REST endpoints use **API Key** authentication. Both `gfk_` (Secret) and `gfc_` (Cloud) keys are accepted:
 
 ```
-X-API-Key: your-api-key-here
+X-Api-Key: gfk_YOUR_SECRET_KEY
 ```
 
 Get your API key from the NoverFly dashboard: **Settings → API Keys → Create Key**.
 
-WebSocket authentication uses **JWT token**:
+WebSocket `/ws` supports two auth modes:
+
+**Mode 1 — API key (gfk_ secret + userId):**
+
+```json
+{ "type": "auth", "payload": { "apiKey": "gfk_YOUR_SECRET_KEY", "userId": "uuid-of-user" } }
+```
+
+**Mode 2 — JWT dashboard:**
 
 ```json
 { "type": "auth", "payload": { "token": "your-jwt-token" } }
 ```
+
+> `gfc_` (Cloud) keys and project-user (`site_user` / `app_user`) JWTs are **refused** on `/ws`. Use `gfk_` secret + `userId`, or a dashboard JWT.
 
 ---
 
@@ -271,19 +281,19 @@ X-API-Key: gfk_YOUR_SECRET_KEY
     { "urls": "stun:stun.l.google.com:19302" },
     { "urls": "turn:turn.gloowflix.cloud:3478", "username": "...", "credential": "..." }
   ],
-  "signalEndpoint": "wss://api.gloowflix.cloud/ws"
+  "signalEndpoint": "wss://api.noverfly.com/ws"
 }
 ```
 
 ### Step 2: Connect WebSocket & Authenticate
 
 ```javascript
-const ws = new WebSocket('wss://api.gloowflix.cloud/ws');
+const ws = new WebSocket('wss://api.noverfly.com/ws');
 
 ws.onopen = () => {
   ws.send(JSON.stringify({
     type: 'auth',
-    payload: { token: 'jwt-token-of-caller' }
+    payload: { apiKey: 'gfk_YOUR_SECRET_KEY', userId: 'uuid-of-caller' }
   }));
 };
 ```
@@ -500,7 +510,7 @@ import {
 } from 'react-native-webrtc';
 
 // Same WebSocket + signaling flow as web
-const ws = new WebSocket('wss://api.gloowflix.cloud/ws');
+const ws = new WebSocket('wss://api.noverfly.com/ws');
 
 // Get camera + mic (same API as web)
 const stream = await mediaDevices.getUserMedia({ audio: true, video: true });
@@ -579,7 +589,7 @@ RNCallKeep.addEventListener('endCall', ({ callUUID }) => {
 
 ### Base URL
 ```
-https://api.gloowflix.cloud/v1/cloud/messenger
+https://api.noverfly.com/v1/cloud/messenger
 ```
 
 ### Authentication
@@ -612,7 +622,7 @@ const response = await fetch('/v1/tenants/{tenantId}/messenger/conversations', {
 });
 
 // WebSocket — same as developer flow
-const ws = new WebSocket('wss://api.gloowflix.cloud/ws');
+const ws = new WebSocket('wss://api.noverfly.com/ws');
 ws.send(JSON.stringify({ type: 'auth', payload: { token: jwt } }));
 ```
 

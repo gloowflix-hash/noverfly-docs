@@ -32,7 +32,7 @@ Typical route groups:
 | Auth | `/v1/auth/*` |
 | Tenants | `/v1/tenants/*` |
 | Sites | `/v1/tenants/:tenantId/sites`, `/v1/sites/:siteId` |
-| API keys | `/v1/sites/:siteId/api-keys*`, `/v1/sites/:siteId/ensure-api-keys` |
+| API keys | `/v1/projects/:projectId/api-keys*`, `/v1/projects/:projectId/ensure-api-keys` |
 | Publish | `/v1/sites/:siteId/publish` |
 | Domains | `/v1/sites/:siteId/domains` |
 
@@ -54,12 +54,14 @@ Main routes:
 |---|---|---|---|
 | `GET` | `/v1/api/data/info` | Resolve current site and tenant from the key | `READ` |
 | `GET` | `/v1/api/data/auth/config` | Read auth provider config for the key's site | `READ` |
+| `PUT` | `/v1/api/data/auth/config/:provider` | Configure an auth provider | `ADMIN` |
+| `POST` | `/v1/api/data/auth/config/google/credentials` | Import Google OAuth Web JSON (multipart or JSON) | `ADMIN` |
 | `POST` | `/v1/api/data/auth/register` | Register an end user for the key's site | `READ` |
 | `POST` | `/v1/api/data/auth/login` | Login an end user for the key's site | `READ` |
-| `GET` | `/v1/api/data/auth/me` | Read the current end-user profile | Site-user JWT |
-| `PATCH` | `/v1/api/data/auth/me` | Update the current end-user profile | Site-user JWT |
-| `POST` | `/v1/api/data/auth/refresh` | Refresh the current end-user session | Site-user JWT |
-| `POST` | `/v1/api/data/auth/logout` | Logout the current end-user session | Site-user JWT |
+| `GET` | `/v1/api/data/auth/me` | Read the current end-user profile | App-user JWT |
+| `PATCH` | `/v1/api/data/auth/me` | Update the current end-user profile | App-user JWT |
+| `POST` | `/v1/api/data/auth/refresh` | Refresh the current end-user session | App-user JWT |
+| `POST` | `/v1/api/data/auth/logout` | Logout the current end-user session | App-user JWT |
 | `GET` | `/v1/api/data/collections` | List collections | `READ` |
 | `GET` | `/v1/api/data/collections/:slug` | Get collection schema | `READ` |
 | `POST` | `/v1/api/data/collections` | Create collection | `ADMIN` |
@@ -84,7 +86,25 @@ Important:
 - Do not send `X-Tenant-Id` with `gfk_` requests.
 - The key already resolves the tenant and site.
 
-### 3. Cloud API
+### 3. Hosting API
+
+Publishes prebuilt React, Vite, Astro or Next.js static-export sites as
+immutable S3 releases. Authentication uses the site-scoped `gfk_`; deployment
+mutations require `ADMIN`.
+
+| Method | Route | Description | Permission |
+|---|---|---|---|
+| `GET` / `PUT` / `DELETE` | `/v1/hosting/project` | Inspect, configure or remove Hosting/S3 | `READ` / `ADMIN` |
+| `POST` | `/v1/hosting/deployments` | Create an immutable manifest | `ADMIN` |
+| `POST` | `/v1/hosting/deployments/:id/upload-urls` | Sign S3 upload batches | `ADMIN` |
+| `POST` | `/v1/hosting/deployments/:id/finalize` | Verify S3 files | `ADMIN` |
+| `POST` | `/v1/hosting/deployments/:id/activate` | Publish or rollback atomically | `ADMIN` |
+| `GET` | `/v1/hosting/deployments*` | List/inspect releases | `READ` |
+| `DELETE` | `/v1/hosting/deployments/:id` | Delete a non-active release | `ADMIN` |
+
+See [Noverfly Hosting](hosting-api.md).
+
+### 4. Cloud API
 
 Used by external backends and automations for file workflows and media services.
 
@@ -117,7 +137,7 @@ Important:
 - Do not send `X-Tenant-Id` with `gfc_` requests.
 - `gfc_` is a Cloud key family, not a JWT token.
 
-### 4. Realtime and Messenger Developer API
+### 5. Realtime and Messenger Developer API
 
 Used by apps that need chat, voice messages, call history, and WebRTC signaling.
 
@@ -174,36 +194,36 @@ Current call signaling message types include:
 - `call:reject`
 - `call:busy`
 
-### 5. Site-user Auth API
+### 5. App-user Auth API
 
-Used for end users of a specific site or app.
+Used for end users of a specific project or app.
 
 | Method | Route |
 |---|---|
-| `POST` | `/v1/app/:siteId/auth/register` |
-| `POST` | `/v1/app/:siteId/auth/login` |
-| `GET` | `/v1/app/:siteId/auth/me` |
-| `PATCH` | `/v1/app/:siteId/auth/me` |
-| `POST` | `/v1/app/:siteId/auth/refresh` |
-| `POST` | `/v1/app/:siteId/auth/logout` |
-| `POST` | `/v1/app/:siteId/auth/forgot-password` |
-| `POST` | `/v1/app/:siteId/auth/reset-password` |
-| `POST` | `/v1/app/:siteId/auth/verify-email` |
-| `POST` | `/v1/app/:siteId/auth/resend-verification` |
-| `POST` | `/v1/app/:siteId/auth/mfa/totp/setup` |
-| `POST` | `/v1/app/:siteId/auth/mfa/totp/verify` |
-| `POST` | `/v1/app/:siteId/auth/mfa/totp/disable` |
-| `POST` | `/v1/app/:siteId/auth/me/avatar` |
-| `GET` | `/v1/app/:siteId/auth/google` |
-| `GET` | `/v1/app/:siteId/auth/google/callback` |
+| `POST` | `/v1/app/:projectId/auth/register` |
+| `POST` | `/v1/app/:projectId/auth/login` |
+| `GET` | `/v1/app/:projectId/auth/me` |
+| `PATCH` | `/v1/app/:projectId/auth/me` |
+| `POST` | `/v1/app/:projectId/auth/refresh` |
+| `POST` | `/v1/app/:projectId/auth/logout` |
+| `POST` | `/v1/app/:projectId/auth/forgot-password` |
+| `POST` | `/v1/app/:projectId/auth/reset-password` |
+| `POST` | `/v1/app/:projectId/auth/verify-email` |
+| `POST` | `/v1/app/:projectId/auth/resend-verification` |
+| `POST` | `/v1/app/:projectId/auth/mfa/totp/setup` |
+| `POST` | `/v1/app/:projectId/auth/mfa/totp/verify` |
+| `POST` | `/v1/app/:projectId/auth/mfa/totp/disable` |
+| `POST` | `/v1/app/:projectId/auth/me/avatar` |
+| `GET` | `/v1/app/:projectId/auth/google` |
+| `GET` | `/v1/app/:projectId/auth/google/callback` |
 
 There is also a public mirror used by some site/social flows:
 
-- `/v1/public/sites/:siteId/auth/register`
-- `/v1/public/sites/:siteId/auth/login`
-- `/v1/public/sites/:siteId/auth/refresh`
-- `/v1/public/sites/:siteId/auth/me`
-- `/v1/public/sites/:siteId/auth/logout`
+- `/v1/public/sites/:projectId/auth/register`
+- `/v1/public/sites/:projectId/auth/login`
+- `/v1/public/sites/:projectId/auth/refresh`
+- `/v1/public/sites/:projectId/auth/me`
+- `/v1/public/sites/:projectId/auth/logout`
 
 ### 6. Streaming and Media Routes
 
@@ -213,11 +233,21 @@ These routes are already present in the deployed platform for dashboard-managed 
 |---|---|---|
 | `POST` | `/v1/tenants/:tenantId/video/connect` | Connect a video provider |
 | `POST` | `/v1/tenants/:tenantId/video/test` | Test the video provider connection |
-| `POST` | `/v1/sites/:siteId/videos` | Create a hosted video entry |
-| `GET` | `/v1/sites/:siteId/videos` | List site videos |
-| `POST` | `/v1/sites/:siteId/videos/mp4-url/validate` | Validate a direct MP4 URL |
-| `POST` | `/v1/sites/:siteId/videos/mp4-url` | Add a video from an MP4 URL |
-| `POST` | `/v1/public/sites/:siteId/videos/:videoId/access` | Check access to a monetized public video |
+| `GET` | `/v1/videos` | List project videos (DevAPI, scope `videos:read`) |
+| `GET` | `/v1/videos/:videoId` | Get a video |
+| `GET` | `/v1/videos/:videoId/status` | Flivex processing status |
+| `GET` | `/v1/videos/:videoId/low` | Low-resolution variant |
+| `GET` | `/v1/videos/:videoId/high` | High-resolution variant |
+| `GET` | `/v1/videos/:videoId/cover` | Poster / thumbnail |
+| `GET` | `/v1/videos/:videoId/play` | Playback URL |
+| `GET` | `/v1/videos/:videoId/manifest` | HLS manifest |
+| `POST` | `/v1/videos/:videoId/cover/from-frame` | Extract cover from frame |
+| `PUT` | `/v1/videos/:videoId/cover/select` | Select cover |
+| `POST` | `/v1/videos/:videoId/reprocess` | Reprocess via Flivex |
+| `POST` | `/v1/videos/:videoId/publish` | Publish video |
+| `POST` | `/v1/videos/:videoId/unpublish` | Unpublish video |
+| `DELETE` | `/v1/videos/:videoId` | Delete video |
+| `GET` | `/v1/videos/:videoId/events` | Processing events |
 | `GET` | `/v1/tenants/:tenantId/music/tracks/:trackId/stream` | Return a music stream URL |
 | `POST` | `/webhooks/flivex` | Receive processed media callbacks from Flivex |
 

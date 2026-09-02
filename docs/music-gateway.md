@@ -28,7 +28,7 @@ Depuis le dashboard createur:
 Endpoint dashboard:
 
 ```http
-POST /v1/sites/:siteId/music-gateway/dashboard/keys
+POST /v1/projects/:projectId/music-gateway/dashboard/keys
 Authorization: Bearer <dashboard_jwt>
 ```
 

@@ -18,7 +18,7 @@ Chaque client définit **ses propres collections** (comme des feuilles Google Sh
 | Porte | Header | Routes |
 |-------|--------|--------|
 | **DevAPI CLI / clé secrète** | `X-Api-Key: gfk_…` ou `Authorization: Bearer gfk_…` | `/v1/devapi/scripts/*`, `/v1/api/data/*` |
-| **Dashboard admin** | JWT session (`__session` ou Bearer JWT) | `/v1/sites/:siteId/scripts/*` |
+| **Dashboard admin** | JWT session (`__session` ou Bearer JWT) | `/v1/projects/:projectId/scripts/*` |
 
 Ne pas envoyer une clé `gfk_` sur les routes dashboard : elles attendent un JWT utilisateur.
 
@@ -167,16 +167,16 @@ POST /v1/devapi/script-routes
 }
 ```
 
-→ `GET /v1/public/sites/{siteId}/r/api/feed`
+→ `GET /v1/public/sites/{projectId}/r/api/feed`
 
 ## Dashboard (JWT — console web)
 
 Mêmes opérations que DevAPI, plus `/test` avec brouillon :
 
-- `GET|POST /v1/sites/:siteId/scripts`
-- `GET|PATCH|DELETE /v1/sites/:siteId/scripts/:slug`
-- `GET /v1/sites/:siteId/scripts/:slug/versions`
-- `POST /v1/sites/:siteId/scripts/:slug/test|publish|rollback|logs`
+- `GET|POST /v1/projects/:projectId/scripts`
+- `GET|PATCH|DELETE /v1/projects/:projectId/scripts/:slug`
+- `GET /v1/projects/:projectId/scripts/:slug/versions`
+- `POST /v1/projects/:projectId/scripts/:slug/test|publish|rollback|logs`
 
 ## Workflow CLI recommandé
 

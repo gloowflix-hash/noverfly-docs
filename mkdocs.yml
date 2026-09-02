@@ -22,6 +22,7 @@ nav:
       - Database: database.md
   - Cloud Services:
       - Hosting API (React / Vite / Next export): hosting-api.md
+      - Synchronisation local-cloud par branche: local-cloud-branch-sync-architecture.md
       - Cloud Scripts: cloud-scripts.md
       - Cloud Scripts (opérationnel): cloud-scripts-operational-guide.md
       - Mini-services Cloud Scripts: mini-services-cloud-scripts.md

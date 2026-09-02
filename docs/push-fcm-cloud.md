@@ -4,6 +4,9 @@ Le backend ne lit pas un fichier Firebase local sur le serveur.
 
 Le JSON `service account` doit etre envoye au backend via la DevAPI cloud, puis il est chiffre et stocke par tenant dans `tenant_push_configs`.
 
+La gestion des credentials requiert une clé secrète `gfk_` de permission
+**ADMIN**. Les clés `gfc_`, READ et READ_WRITE sont refusées.
+
 ## Routes utiles
 
 - `PUT /v1/cloud/push/config/fcm`
@@ -16,7 +19,7 @@ Le JSON `service account` doit etre envoye au backend via la DevAPI cloud, puis 
 
 ```bash
 curl -X PUT "https://api.noverfly.com/v1/cloud/push/config/fcm" \
-  -H "X-Api-Key: gfk_xxx_ou_gfc_xxx" \
+  -H "X-Api-Key: gfk_VOTRE_CLE_ADMIN" \
   -H "Content-Type: application/json" \
   --data @firebase-service-account.json
 ```
@@ -31,7 +34,7 @@ Le body peut etre:
 
 ```bash
 curl -X POST "https://api.noverfly.com/v1/cloud/push/config/fcm/validate" \
-  -H "X-Api-Key: gfk_xxx_ou_gfc_xxx" \
+  -H "X-Api-Key: gfk_VOTRE_CLE_ADMIN" \
   -H "Content-Type: application/json" \
   -d "{}"
 ```

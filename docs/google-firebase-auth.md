@@ -13,9 +13,9 @@ Base URL : `https://api.noverfly.com`
 
 | Besoin | Où créer les clés | Où les envoyer à Noverfly | Qui appelle |
 |--------|-------------------|---------------------------|-------------|
-| Login / inscription Google | [Google Cloud Console](https://console.cloud.google.com/) → OAuth Client | `POST /v1/sites/:siteId/auth/providers` | Dashboard JWT |
-| Push FCM Android / iOS | [Firebase Console](https://console.firebase.google.com/) → Service account | `PUT /v1/cloud/push/config/fcm` | `gfk_` ou `gfc_` |
-| Login mobile déjà authentifié Google | SDK Google / Firebase Auth **chez vous** | `POST /v1/app/:siteId/auth/oauth/google` | App (sans clé secrète) |
+| Login / inscription Google | [Google Cloud Console](https://console.cloud.google.com/) → OAuth Web Client | `POST /v1/api/data/auth/config/google/credentials` | `gfk_` ADMIN (recommandé) |
+| Push FCM Android / iOS | [Firebase Console](https://console.firebase.google.com/) → Service account | `PUT /v1/cloud/push/config/fcm` | `gfk_` ADMIN |
+| Login mobile déjà authentifié Google | SDK Google / Firebase Auth **chez vous** | `POST /v1/app/:projectId/auth/oauth/google` | App (sans clé secrète) |
 
 ```
 ┌─────────────────┐     OAuth Client ID/Secret      ┌──────────────────┐
@@ -45,19 +45,97 @@ Base URL : `https://api.noverfly.com`
 6. Pour le client **Web**, ajouter l’URI de redirection :
 
 ```text
-https://api.noverfly.com/v1/app/YOUR_SITE_ID/auth/google/callback
+https://api.noverfly.com/v1/app/YOUR_PROJECT_ID/auth/google/callback
 ```
 
 Vous obtenez :
 - `clientId` → `xxxxx.apps.googleusercontent.com`
 - `clientSecret` → `GOCSPX-...`
 
-### A2. Envoyer les clés à Noverfly (dashboard)
+### A2. Envoyer le fichier OAuth à Noverfly (`gfk_` ADMIN, recommandé)
+
+Dans Google Cloud, ouvrez le client **OAuth 2.0 / Application Web**, puis
+cliquez **Télécharger le JSON**. Envoyez ce fichier directement :
+
+```bash
+curl -X POST \
+  "https://api.noverfly.com/v1/api/data/auth/config/google/credentials" \
+  -H "X-Api-Key: gfk_VOTRE_CLE_ADMIN" \
+  -F "file=@client_secret_xxxxx.apps.googleusercontent.com.json;type=application/json" \
+  -F "enabled=true" \
+  -F "allowSignups=true" \
+  -F "appName=Streewi"
+```
+
+La `gfk_` doit :
+
+- être de type Secret (`gfk_`, pas `gfc_`) ;
+- appartenir au site concerné ;
+- avoir la permission `ADMIN`.
+
+Il ne faut **pas** ajouter `NOVERFLY_DASHBOARD_JWT` pour cette route.
+Une `401` sur `/v1/projects/:projectId/auth/providers` signifie généralement que
+vous avez appelé la route dashboard JWT au lieu de la route DevAPI ci-dessus.
+
+Noverfly :
+
+- vérifie qu’il s’agit d’un client OAuth **Web** ;
+- refuse `google-services.json`, un client Desktop/Installed et un service
+  account Firebase ;
+- chiffre `client_secret` en AES-256-GCM avant stockage ;
+- ne renvoie jamais le secret dans les réponses ;
+- indique si l’URI de callback manque dans le JSON téléchargé.
+
+Le fichier doit contenir une section `web` :
+
+```json
+{
+  "web": {
+    "client_id": "xxxxx.apps.googleusercontent.com",
+    "client_secret": "GOCSPX-xxxxx",
+    "redirect_uris": [
+      "https://api.noverfly.com/v1/app/YOUR_PROJECT_ID/auth/google/callback"
+    ],
+    "javascript_origins": [
+      "https://votre-site.noverfly.com"
+    ]
+  }
+}
+```
+
+Vérifier sans exposer le secret :
+
+```bash
+curl "https://api.noverfly.com/v1/api/data/auth/config" \
+  -H "X-Api-Key: gfk_VOTRE_CLE_ADMIN"
+```
+
+La réponse contient `clientIdConfigured` et `clientSecretConfigured`, jamais
+la valeur de `clientSecret`.
+
+Configuration JSON directe (utile en CI, moins recommandée qu’un secret
+manager) :
+
+```bash
+curl -X PUT \
+  "https://api.noverfly.com/v1/api/data/auth/config/google" \
+  -H "X-Api-Key: gfk_VOTRE_CLE_ADMIN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "enabled": true,
+    "clientId": "xxxxx.apps.googleusercontent.com",
+    "clientSecret": "GOCSPX-xxxxx",
+    "callbackUrl": "https://api.noverfly.com/v1/app/YOUR_PROJECT_ID/auth/google/callback",
+    "allowSignups": true
+  }'
+```
+
+### A2 bis. Route dashboard JWT
 
 Auth : **JWT dashboard** (compte propriétaire / admin du site).
 
 ```bash
-curl -X POST "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers" \
+curl -X POST "https://api.noverfly.com/v1/projects/YOUR_PROJECT_ID/auth/providers" \
   -H "Authorization: Bearer YOUR_DASHBOARD_JWT" \
   -H "Content-Type: application/json" \
   -d '{
@@ -65,7 +143,7 @@ curl -X POST "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers" \
     "enabled": true,
     "clientId": "xxxxx.apps.googleusercontent.com",
     "clientSecret": "GOCSPX-xxxxx",
-    "callbackUrl": "https://api.noverfly.com/v1/app/YOUR_SITE_ID/auth/google/callback",
+    "callbackUrl": "https://api.noverfly.com/v1/app/YOUR_PROJECT_ID/auth/google/callback",
     "allowSignups": true
   }'
 ```
@@ -73,7 +151,7 @@ curl -X POST "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers" \
 Mettre à jour :
 
 ```bash
-curl -X PATCH "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers/google" \
+curl -X PATCH "https://api.noverfly.com/v1/projects/YOUR_PROJECT_ID/auth/providers/google" \
   -H "Authorization: Bearer YOUR_DASHBOARD_JWT" \
   -H "Content-Type: application/json" \
   -d '{ "enabled": true, "clientSecret": "GOCSPX-nouveau" }'
@@ -82,10 +160,10 @@ curl -X PATCH "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers/goo
 Lister / désactiver :
 
 ```bash
-curl "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers" \
+curl "https://api.noverfly.com/v1/projects/YOUR_PROJECT_ID/auth/providers" \
   -H "Authorization: Bearer YOUR_DASHBOARD_JWT"
 
-curl -X DELETE "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers/google" \
+curl -X DELETE "https://api.noverfly.com/v1/projects/YOUR_PROJECT_ID/auth/providers/google" \
   -H "Authorization: Bearer YOUR_DASHBOARD_JWT"
 ```
 
@@ -95,13 +173,13 @@ curl -X DELETE "https://api.noverfly.com/v1/sites/YOUR_SITE_ID/auth/providers/go
 2. L’app ouvre :
 
 ```text
-GET https://api.noverfly.com/v1/app/YOUR_SITE_ID/auth/google
+GET https://api.noverfly.com/v1/app/YOUR_PROJECT_ID/auth/google
 ```
 
 3. Google authentifie → callback Noverfly :
 
 ```text
-GET https://api.noverfly.com/v1/app/YOUR_SITE_ID/auth/google/callback?code=...&state=...
+GET https://api.noverfly.com/v1/app/YOUR_PROJECT_ID/auth/google/callback?code=...&state=...
 ```
 
 4. Noverfly crée / retrouve le `SiteUser`, émet `accessToken` + `refreshToken`.
@@ -119,17 +197,16 @@ L’APK utilise le SDK Google Sign-In ou Firebase Auth **avec vos clés Firebase
 Après succès côté Google, l’app appelle Noverfly pour créer la session site :
 
 ```bash
-curl -X POST "https://api.noverfly.com/v1/app/YOUR_SITE_ID/auth/oauth/google" \
+curl -X POST "https://api.noverfly.com/v1/app/YOUR_PROJECT_ID/auth/oauth/google" \
   -H "Content-Type: application/json" \
   -d '{
-    "profile": {
-      "googleId": "1234567890",
-      "email": "user@gmail.com",
-      "displayName": "Ada Lovelace",
-      "avatarUrl": "https://lh3.googleusercontent.com/..."
-    }
+    "idToken": "TOKEN_ID_SIGNE_RETOURNE_PAR_GOOGLE"
   }'
 ```
+
+Noverfly vérifie auprès de Google la signature/validité, l’expiration,
+l’émetteur, l’email vérifié et surtout `aud === clientId` du site. Un profil
+fourni directement par le client n’est jamais accepté comme preuve d’identité.
 
 Réponse typique :
 
@@ -152,14 +229,15 @@ Ensuite, les appels authentifiés utilisateur utilisent :
 Authorization: Bearer ACCESS_TOKEN
 ```
 
-ex. `GET /v1/app/YOUR_SITE_ID/auth/me`
+ex. `GET /v1/app/YOUR_PROJECT_ID/auth/me`
 
-### A5. Ce que Noverfly fait avec le profil Google
+### A5. Ce que Noverfly fait avec l’identité Google vérifiée
 
-1. Cherche un utilisateur déjà lié (`googleId`).
-2. Sinon, rattache un compte existant même email.
-3. Sinon, crée un compte (si `allowSignups: true`).
-4. Émet les tokens de session du **site** (pas un token Google).
+1. Vérifie le `idToken` et extrait `sub`, `email`, `name`, `picture`.
+2. Cherche un utilisateur déjà lié (`googleId = sub`).
+3. Sinon, rattache un compte existant même email.
+4. Sinon, crée un compte (si `allowSignups: true`).
+5. Émet les tokens de session du **site** (pas un token Google).
 
 ---
 
@@ -186,6 +264,9 @@ Exemple de champs (ne jamais committer ce fichier) :
 ```
 
 ### B2. Envoyer le JSON à Noverfly
+
+Auth requise : une clé secrète `gfk_` avec permission **ADMIN**. Une `gfc_`
+ou une clé READ/READ_WRITE ne peut pas remplacer les credentials push.
 
 ```bash
 curl -X PUT "https://api.noverfly.com/v1/cloud/push/config/fcm" \
@@ -244,7 +325,7 @@ Aligner `firebaseProjectId` / package avec la config FCM du tenant ([client-apps
 - [ ] OAuth Client Web + redirect URI Noverfly
 - [ ] Clés envoyées via `POST .../auth/providers` (`provider: google`)
 - [ ] `enabled: true`, `allowSignups` selon le besoin
-- [ ] Test navigateur : `/v1/app/SITE_ID/auth/google`
+- [ ] Test navigateur : `/v1/app/PROJECT_ID/auth/google`
 - [ ] Test mobile : `POST .../auth/oauth/google` avec profil
 
 ### Firebase Push
@@ -285,24 +366,24 @@ Aligner `firebaseProjectId` / package avec la config FCM du tenant ([client-apps
 ### Config (admin site)
 | Méthode | Route | Auth |
 |---------|-------|------|
-| GET | `/v1/sites/:siteId/auth/providers` | JWT |
-| POST | `/v1/sites/:siteId/auth/providers` | JWT |
-| PATCH | `/v1/sites/:siteId/auth/providers/:provider` | JWT |
-| DELETE | `/v1/sites/:siteId/auth/providers/:provider` | JWT |
+| GET | `/v1/projects/:projectId/auth/providers` | JWT |
+| POST | `/v1/projects/:projectId/auth/providers` | JWT |
+| PATCH | `/v1/projects/:projectId/auth/providers/:provider` | JWT |
+| DELETE | `/v1/projects/:projectId/auth/providers/:provider` | JWT |
 
 ### Login Google (app)
 | Méthode | Route | Auth |
 |---------|-------|------|
-| GET | `/v1/app/:siteId/auth/google` | public (redirect) |
-| GET | `/v1/app/:siteId/auth/google/callback` | public (redirect) |
-| POST | `/v1/app/:siteId/auth/oauth/google` | public (profil Google) |
-| GET | `/v1/app/:siteId/auth/me` | Bearer site-user |
+| GET | `/v1/app/:projectId/auth/google` | public (redirect) |
+| GET | `/v1/app/:projectId/auth/google/callback` | public (redirect) |
+| POST | `/v1/app/:projectId/auth/oauth/google` | public (`idToken` Google vérifié) |
+| GET | `/v1/app/:projectId/auth/me` | Bearer app-user |
 
 ### Firebase Push
 | Méthode | Route | Auth |
 |---------|-------|------|
-| PUT | `/v1/cloud/push/config/fcm` | `gfk_` / `gfc_` |
-| POST | `/v1/cloud/push/config/fcm/validate` | `gfk_` / `gfc_` |
+| PUT | `/v1/cloud/push/config/fcm` | `gfk_` ADMIN |
+| POST | `/v1/cloud/push/config/fcm/validate` | `gfk_` ADMIN |
 | GET | `/v1/cloud/push/config` | `gfk_` / `gfc_` |
 
 ---

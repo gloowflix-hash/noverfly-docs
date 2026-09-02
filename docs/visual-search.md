@@ -138,10 +138,10 @@ Effet observé dans le code : recherches et indexation sont bloquées pour le si
 
 Les mêmes opérations existent côté dashboard :
 
-- `PUT /v1/sites/:siteId/visual-search/config`
-- `GET /v1/sites/:siteId/visual-search/config`
-- `POST /v1/sites/:siteId/visual-search/backfill`
-- `POST /v1/sites/:siteId/visual-search/provision-scripts`
+- `PUT /v1/projects/:projectId/visual-search/config`
+- `GET /v1/projects/:projectId/visual-search/config`
+- `POST /v1/projects/:projectId/visual-search/backfill`
+- `POST /v1/projects/:projectId/visual-search/provision-scripts`
 
 ## Démarrage client : obtenir un `vst_`
 

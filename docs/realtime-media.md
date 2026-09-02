@@ -38,7 +38,7 @@ Auth supportée :
 Auth refusée :
 
 - `gfc_`
-- site-user JWT
+- app-user JWT
 
 ## Audio / vidéo
 

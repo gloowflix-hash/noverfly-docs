@@ -33,7 +33,7 @@ Le serveur `/ws` accepte :
 Le serveur `/ws` refuse :
 
 - les `gfc_`
-- les site-user JWT
+- les app-user JWT
 
 #### Auth `/ws` avec `gfk_`
 
@@ -74,7 +74,7 @@ Le token `ves_` est émis lors de la création de session Visual Events.
 ### Prérequis
 
 - clé `gfk_` ou `gfc_`
-- cible connue : `userId`, `receiverId` ou `siteUserId`
+- cible connue : `userId`, `receiverId` ou `appUserId` (`siteUserId` accepté comme alias legacy)
 - option `push: true` si vous voulez aussi réveiller les devices
 
 ### Routes principales
@@ -97,7 +97,7 @@ curl -X POST https://api.noverfly.com/v1/cloud/notifications \
   -H "X-Api-Key: gfk_YOUR_SECRET_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "siteUserId": "SITE_USER_ID",
+    "appUserId": "APP_USER_ID",
     "type": "ORDER_CREATED",
     "title": "Nouvelle commande",
     "body": "Commande #123 reçue",
@@ -172,7 +172,7 @@ curl -X POST https://api.noverfly.com/v1/cloud/push/tokens \
     "token": "FCM_DEVICE_TOKEN",
     "deviceId": "device-001",
     "appBundle": "com.example.app",
-    "siteUserId": "SITE_USER_ID",
+    "appUserId": "APP_USER_ID",
     "pushEnabled": true,
     "callsEnabled": true
   }'
@@ -187,7 +187,7 @@ curl -X POST https://api.noverfly.com/v1/cloud/push/send \
   -d '{
     "title": "Promo flash",
     "body": "-50% pendant 1 heure",
-    "siteUserIds": ["SITE_USER_ID"],
+    "appUserIds": ["APP_USER_ID"],
     "priority": "high",
     "data": {
       "screen": "promo"

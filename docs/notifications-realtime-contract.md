@@ -154,7 +154,7 @@ Payload notification recommandé :
 Le frontend doit enregistrer les tokens push via les routes push existantes avec :
 
 - `tenantId`
-- `userId` ou `siteUserId`
+- `userId` ou `appUserId` (`siteUserId` accepté comme alias legacy)
 - `provider`
 - `platform`
 - `token`

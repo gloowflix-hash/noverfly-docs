@@ -339,6 +339,7 @@ Exemple CI minimal : voir [mini-services-cloud-scripts.md](mini-services-cloud-s
 
 ## Docs liées
 
+- [asset-folder-service.md](asset-folder-service.md) — organiser les fichiers en dossiers / sous-dossiers avec politiques d'accès
 - [mini-services-cloud-scripts.md](mini-services-cloud-scripts.md) — pourquoi les mini-services
 - [cloud-scripts-operational-guide.md](cloud-scripts-operational-guide.md) — BullMQ & triggers
 - [ai-cloud-service.md](ai-cloud-service.md) — vault clés IA

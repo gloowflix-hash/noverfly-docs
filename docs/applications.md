@@ -21,7 +21,7 @@ For API-only use cases, the deployed platform can also maintain a headless site 
 ### 2. Ensure the site API keys
 
 ```bash
-curl -X POST https://api.noverfly.com/v1/sites/YOUR_SITE_ID/ensure-api-keys \
+curl -X POST https://api.noverfly.com/v1/projects/YOUR_PROJECT_ID/ensure-api-keys \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
@@ -53,7 +53,7 @@ curl -X POST https://api.noverfly.com/v1/api/data/collections \
 You can use either:
 
 - app-scoped auth through `/v1/api/data/auth/*` with a `gfk_` key
-- explicit site auth through `/v1/app/:siteId/auth/*`
+- explicit site auth through `/v1/app/:projectId/auth/*`
 
 ### 5. Add assets and media
 
@@ -339,9 +339,7 @@ That processing flow can enrich assets with:
 
 Other already deployed media capabilities include:
 
-- site video library routes under `/v1/sites/:siteId/videos`
-- MP4 URL validation and ingestion under `/v1/sites/:siteId/videos/mp4-url*`
-- public video access checks under `/v1/public/sites/:siteId/videos/:videoId/access`
+- video platform routes under `/v1/videos/:videoId` (list, status, low/high variants, cover, play, manifest, reprocess, publish/unpublish)
 - music track streaming under `/v1/tenants/:tenantId/music/tracks/:trackId/stream`
 
 See [Realtime and Media](realtime-media.md) for the dedicated route summary.
@@ -354,12 +352,12 @@ See [Realtime and Media](realtime-media.md) for the dedicated route summary.
 |---|---|---|
 | Tenant and site management | `/v1/tenants/*`, `/v1/sites/*` | Dashboard JWT |
 | Structured data | `/v1/api/data/*`, `/api/*` | `gfk_` |
-| App auth through key-scoped site | `/v1/api/data/auth/*`, `/api/auth/*` | `gfk_` and site-user JWT |
+| App auth through key-scoped site | `/v1/api/data/auth/*`, `/api/auth/*` | `gfk_` and app-user JWT |
 | Media and files | `/v1/api/cloud/*` | `gfc_` |
 | Realtime and messenger | `/v1/cloud/messenger/*`, `/ws` | `gfk_` or `gfc_` plus app user context |
-| End-user auth by site ID | `/v1/app/:siteId/auth/*` | Site-user JWT |
-| Public content | `/v1/public/sites/:siteId/collections/*` | Public |
-| Video and music | `/v1/sites/:siteId/videos/*`, `/v1/tenants/:tenantId/music/*` | Dashboard JWT |
+| End-user auth by project ID | `/v1/app/:projectId/auth/*` | App-user JWT |
+| Public content | `/v1/public/sites/:projectId/collections/*` | Public |
+| Video and music | `/v1/videos/*`, `/v1/tenants/:tenantId/music/*` | DevAPI (`gfk_`) for videos, Dashboard JWT for music |
 
 ---
 

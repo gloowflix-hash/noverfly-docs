@@ -108,7 +108,7 @@ curl -X POST https://api.noverfly.com/v1/tenants/YOUR_TENANT_ID/push/send \
 Targeting fields are mutually compatible. Choose one or several:
 
 - `userIds` — list of dashboard user ids
-- `siteUserIds` — list of site-user ids (end users of a published site)
+- `appUserIds` — list of app-user ids (end users of a published site). `siteUserIds` is accepted as a legacy alias.
 - `tokenIds` — list of explicit `PushToken` ids
 - `toAllTenant: true` — broadcast to every active token of the tenant
 

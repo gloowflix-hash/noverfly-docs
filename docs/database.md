@@ -39,7 +39,7 @@ Use dashboard JWT routes:
 ### 2. Ensure API keys for that site
 
 ```bash
-curl -X POST https://api.noverfly.com/v1/sites/YOUR_SITE_ID/ensure-api-keys \
+curl -X POST https://api.noverfly.com/v1/projects/YOUR_PROJECT_ID/ensure-api-keys \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
@@ -231,8 +231,8 @@ Published content can also be read without an API key through the public routes:
 
 | Method | Route |
 |---|---|
-| `GET` | `/v1/public/sites/:siteId/collections/:slug/records` |
-| `GET` | `/v1/public/sites/:siteId/collections/:slug/records/:recordSlug` |
+| `GET` | `/v1/public/sites/:projectId/collections/:slug/records` |
+| `GET` | `/v1/public/sites/:projectId/collections/:slug/records/:recordSlug` |
 
 Use these routes for public websites, blogs, storefronts, and read-only mobile screens.
 

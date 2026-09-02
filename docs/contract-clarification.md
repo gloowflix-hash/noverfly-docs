@@ -112,13 +112,13 @@ Implemented with `gfc_` keys:
 
 Implemented per site:
 
-- `POST /v1/sites/:siteId/ensure-api-keys`
-- `POST /v1/sites/:siteId/api-keys`
-- `GET /v1/sites/:siteId/api-keys`
-- `GET /v1/sites/:siteId/api-keys/:keyId/reveal`
-- `PATCH /v1/sites/:siteId/api-keys/:keyId`
-- `DELETE /v1/sites/:siteId/api-keys/:keyId`
-- `GET /v1/sites/:siteId/api-docs`
+- `POST /v1/projects/:projectId/ensure-api-keys`
+- `POST /v1/projects/:projectId/api-keys`
+- `GET /v1/projects/:projectId/api-keys`
+- `GET /v1/projects/:projectId/api-keys/:keyId/reveal`
+- `PATCH /v1/projects/:projectId/api-keys/:keyId`
+- `DELETE /v1/projects/:projectId/api-keys/:keyId`
+- `GET /v1/projects/:projectId/api-docs`
 
 ## What is not implemented in this repo today
 

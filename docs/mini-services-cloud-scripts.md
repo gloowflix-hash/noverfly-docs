@@ -103,7 +103,7 @@ curl -X POST "$API/v1/devapi/scripts/run" \
 ### 4. Appeler depuis l’app (sans gfk_)
 
 ```bash
-curl "$API/v1/public/sites/YOUR_SITE_ID/r/api/feed?limit=10"
+curl "$API/v1/public/sites/YOUR_PROJECT_ID/r/api/feed?limit=10"
 ```
 
 ---

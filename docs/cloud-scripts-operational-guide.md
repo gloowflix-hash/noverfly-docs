@@ -262,8 +262,8 @@ WebSocket : `wss://api.noverfly.com/ws`
 ## Routes publiques
 
 ```bash
-curl "$API/v1/public/sites/YOUR_SITE_ID/scripts/feed?page=1&limit=15"
-curl "$API/v1/public/sites/YOUR_SITE_ID/r/api/feed?page=1&limit=15"
+curl "$API/v1/public/sites/YOUR_PROJECT_ID/scripts/feed?page=1&limit=15"
+curl "$API/v1/public/sites/YOUR_PROJECT_ID/r/api/feed?page=1&limit=15"
 ```
 
 ---

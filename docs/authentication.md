@@ -11,7 +11,7 @@ NoverFly currently uses four practical auth surfaces.
 | Dashboard JWT | Admin dashboard, tenants, sites, API key management | `/v1/auth/*` |
 | Developer API keys | External integrations and automations | `X-Api-Key: gfk_...` or `X-Api-Key: gfc_...` |
 | App auth through Data API | Headless apps where the site is resolved by the `gfk_` key | `/v1/api/data/auth/*` or `/api/auth/*` |
-| Site-user JWT | End users inside a specific site or app | `/v1/app/:siteId/auth/*` |
+| App-user JWT | End users inside a specific project or app | `/v1/app/:projectId/auth/*` |
 
 ---
 
@@ -39,7 +39,7 @@ Content-Type: application/json
 | `/v1/tenants/*` | Tenant management |
 | `/v1/tenants/:tenantId/sites` | Site creation and listing |
 | `/v1/sites/:siteId` | Site details and updates |
-| `/v1/sites/:siteId/api-keys*` | API key management |
+| `/v1/projects/:projectId/api-keys*` | API key management |
 | `/v1/sites/:siteId/publish` | Publish flow |
 
 Use `X-Tenant-Id` only when the dashboard route contract explicitly requires tenant context.
@@ -80,12 +80,12 @@ Key management is done with dashboard JWT auth.
 
 | Method | Route | Purpose |
 |---|---|---|
-| `POST` | `/v1/sites/:siteId/ensure-api-keys` | Create default `gfk_` and `gfc_` keys if missing |
-| `POST` | `/v1/sites/:siteId/api-keys` | Create a key |
-| `GET` | `/v1/sites/:siteId/api-keys` | List keys |
-| `GET` | `/v1/sites/:siteId/api-keys/:keyId/reveal` | Reveal full key |
-| `PATCH` | `/v1/sites/:siteId/api-keys/:keyId` | Activate or deactivate |
-| `DELETE` | `/v1/sites/:siteId/api-keys/:keyId` | Revoke |
+| `POST` | `/v1/projects/:projectId/ensure-api-keys` | Create default `gfk_` and `gfc_` keys if missing |
+| `POST` | `/v1/projects/:projectId/api-keys` | Create a key |
+| `GET` | `/v1/projects/:projectId/api-keys` | List keys |
+| `GET` | `/v1/projects/:projectId/api-keys/:keyId/reveal` | Reveal full key |
+| `PATCH` | `/v1/projects/:projectId/api-keys/:keyId` | Activate or deactivate |
+| `DELETE` | `/v1/projects/:projectId/api-keys/:keyId` | Revoke |
 
 ---
 
@@ -110,8 +110,8 @@ Main routes:
 | `POST` | `/v1/api/data/auth/login` | Login a site user |
 | `GET` | `/v1/api/data/auth/me` | Read current profile using bearer token |
 | `PATCH` | `/v1/api/data/auth/me` | Update current profile using bearer token |
-| `POST` | `/v1/api/data/auth/refresh` | Refresh a site-user session |
-| `POST` | `/v1/api/data/auth/logout` | Logout a site-user session |
+| `POST` | `/v1/api/data/auth/refresh` | Refresh an app-user session |
+| `POST` | `/v1/api/data/auth/logout` | Logout an app-user session |
 
 Short alias:
 
@@ -144,38 +144,38 @@ After login, use the returned access token as a bearer token for `/auth/me`, `/a
 
 ---
 
-## 4. Site-user JWT API
+## 4. App-user JWT API
 
-Use site-user JWT for end users inside a site or application when you already know the site ID.
+Use app-user JWT for end users inside a project or application when you already know the project ID.
 
 Main routes:
 
 | Method | Route |
 |---|---|
-| `POST` | `/v1/app/:siteId/auth/register` |
-| `POST` | `/v1/app/:siteId/auth/login` |
-| `GET` | `/v1/app/:siteId/auth/me` |
-| `PATCH` | `/v1/app/:siteId/auth/me` |
-| `POST` | `/v1/app/:siteId/auth/refresh` |
-| `POST` | `/v1/app/:siteId/auth/logout` |
-| `POST` | `/v1/app/:siteId/auth/forgot-password` |
-| `POST` | `/v1/app/:siteId/auth/reset-password` |
-| `POST` | `/v1/app/:siteId/auth/verify-email` |
-| `POST` | `/v1/app/:siteId/auth/resend-verification` |
-| `POST` | `/v1/app/:siteId/auth/mfa/totp/setup` |
-| `POST` | `/v1/app/:siteId/auth/mfa/totp/verify` |
-| `POST` | `/v1/app/:siteId/auth/mfa/totp/disable` |
-| `POST` | `/v1/app/:siteId/auth/me/avatar` |
-| `GET` | `/v1/app/:siteId/auth/google` |
-| `GET` | `/v1/app/:siteId/auth/google/callback` |
+| `POST` | `/v1/app/:projectId/auth/register` |
+| `POST` | `/v1/app/:projectId/auth/login` |
+| `GET` | `/v1/app/:projectId/auth/me` |
+| `PATCH` | `/v1/app/:projectId/auth/me` |
+| `POST` | `/v1/app/:projectId/auth/refresh` |
+| `POST` | `/v1/app/:projectId/auth/logout` |
+| `POST` | `/v1/app/:projectId/auth/forgot-password` |
+| `POST` | `/v1/app/:projectId/auth/reset-password` |
+| `POST` | `/v1/app/:projectId/auth/verify-email` |
+| `POST` | `/v1/app/:projectId/auth/resend-verification` |
+| `POST` | `/v1/app/:projectId/auth/mfa/totp/setup` |
+| `POST` | `/v1/app/:projectId/auth/mfa/totp/verify` |
+| `POST` | `/v1/app/:projectId/auth/mfa/totp/disable` |
+| `POST` | `/v1/app/:projectId/auth/me/avatar` |
+| `GET` | `/v1/app/:projectId/auth/google` |
+| `GET` | `/v1/app/:projectId/auth/google/callback` |
 
 There is also a public mirror used by some public/social site flows:
 
-- `/v1/public/sites/:siteId/auth/register`
-- `/v1/public/sites/:siteId/auth/login`
-- `/v1/public/sites/:siteId/auth/refresh`
-- `/v1/public/sites/:siteId/auth/me`
-- `/v1/public/sites/:siteId/auth/logout`
+- `/v1/public/sites/:projectId/auth/register`
+- `/v1/public/sites/:projectId/auth/login`
+- `/v1/public/sites/:projectId/auth/refresh`
+- `/v1/public/sites/:projectId/auth/me`
+- `/v1/public/sites/:projectId/auth/logout`
 
 This auth mode is scoped to a single site.
 
@@ -197,4 +197,4 @@ This auth mode is scoped to a single site.
 - Use dashboard JWT for admin and management routes.
 - Use `gfk_` for structured data and app-scoped auth bootstrap.
 - Use `gfc_` for storage and media services.
-- Use site-user bearer tokens for `/auth/me`, `/auth/refresh`, and user-session flows.
+- Use app-user bearer tokens for `/auth/me`, `/auth/refresh`, and user-session flows.

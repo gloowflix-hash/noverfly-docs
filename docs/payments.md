@@ -19,9 +19,9 @@ Permettre a chaque tenant/site de brancher son propre agregateur (PayPal, CinetP
 - `PATCH /v1/tenants/:tenantId/payment-providers/:configId/toggle`
 - `PATCH /v1/tenants/:tenantId/payment-providers/:configId/default`
 - `DELETE /v1/tenants/:tenantId/payment-providers/:configId`
-- `GET /v1/sites/:siteId/payment-options`
-- `POST /v1/sites/:siteId/checkout/pay`
-- `GET /v1/sites/:siteId/checkout/verify/:providerRef`
+- `GET /v1/projects/:projectId/payment-options`
+- `POST /v1/projects/:projectId/checkout/pay`
+- `GET /v1/projects/:projectId/checkout/verify/:providerRef`
 
 ## Routes DevAPI (X-Api-Key gfk_/gfc_)
 
@@ -39,7 +39,7 @@ Permettre a chaque tenant/site de brancher son propre agregateur (PayPal, CinetP
 ## Exemple: configurer PayPal en manuel
 
 ```bash
-curl -X POST "https://api.gloowflix.cloud/v1/cloud/payments/providers" \
+curl -X POST "https://api.noverfly.com/v1/cloud/payments/providers" \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: gfk_xxx_or_gfc_xxx" \
   -d '{
@@ -61,7 +61,7 @@ curl -X POST "https://api.gloowflix.cloud/v1/cloud/payments/providers" \
 ## Exemple: init checkout
 
 ```bash
-curl -X POST "https://api.gloowflix.cloud/v1/cloud/payments/checkout/init" \
+curl -X POST "https://api.noverfly.com/v1/cloud/payments/checkout/init" \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: gfk_xxx_or_gfc_xxx" \
   -d '{
